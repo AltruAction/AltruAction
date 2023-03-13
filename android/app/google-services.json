@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "835596600741",
+    "project_id": "recloset-99e15",
+    "storage_bucket": "recloset-99e15.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:835596600741:android:f12f180ca7cb344f35544c",
+        "android_client_info": {
+          "package_name": "com.reCloset.recloset"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "835596600741-orb5lk4dj925i8l5i2bosj3i212ttg4c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAtUSO1cuUJplHr1c4raOosBCW5NH_xgw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "835596600741-6jak3p0hi84vk5scoculhrnagfm4a44h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "835596600741-9qb9gbealdi8u34b788e1ufl7d2aviih.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.reCloset.recloset"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

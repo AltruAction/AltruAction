@@ -31,3 +31,6 @@ doc/api/
 .idea/dictionaries
 .idea/libraries
 .idea/caches
+
+# VSCode
+.vscode

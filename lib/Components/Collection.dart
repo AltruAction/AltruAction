@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:recloset/Components/ItemCard.dart';
+import 'package:recloset/Pages/Item.dart';
 
 class ItemCardData {
   // TODO: Change to UUID?
@@ -56,9 +57,14 @@ class _CollectionState extends State<Collection> {
                 scrollDirection: Axis.horizontal,
                 children: widget.items
                     .map((item) => ItemCard(
-                        imagePath: item.imagePath,
-                        name: item.name,
-                        credits: item.credits))
+                          imagePath: item.imagePath,
+                          name: item.name,
+                          credits: item.credits,
+                          onPress: () =>
+                              Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => Item(),
+                          )),
+                        ))
                     .toList(),
               ))
         ]));

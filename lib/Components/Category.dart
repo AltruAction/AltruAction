@@ -27,11 +27,13 @@ class _CategoryState extends State<Category> {
                       borderRadius: BorderRadius.circular(50),
                       color: Colors.green,
                     ),
-                    child: Image.asset(
-                      widget.imagePath,
-                      height: 50,
-                      width: 50,
-                    ))),
+                    child: Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Image.asset(
+                          widget.imagePath,
+                          height: 50,
+                          width: 50,
+                        )))),
             Text(widget.categoryName)
           ],
         ));

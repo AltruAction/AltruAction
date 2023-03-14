@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:recloset/Components/Categories.dart';
 import 'package:recloset/Components/Category.dart';
+import 'package:recloset/Components/Collection.dart';
+import 'package:recloset/Components/ItemCard.dart';
 import 'package:recloset/Components/SearchBar.dart';
 
 class CategoryType {
@@ -21,6 +23,15 @@ class Home extends StatelessWidget {
     CategoryType("assets/shirt.png", "Others"),
   ];
 
+  final List<ItemCardData> dummyData = [
+    ItemCardData(0, "White shirt", "assets/shirt.png", 10),
+    ItemCardData(1, "Blue shirt", "assets/shirt.png", 5),
+    ItemCardData(2, "Green shirt", "assets/shirt.png", 7),
+    ItemCardData(3, "Yellow shirt", "assets/shirt.png", 4),
+    ItemCardData(4, "Orange shirt", "assets/shirt.png", 9),
+    ItemCardData(5, "Purple shirt", "assets/shirt.png", 2),
+  ];
+
   Home({Key? key}) : super(key: key);
 
   @override
@@ -36,7 +47,11 @@ class Home extends StatelessWidget {
             print('Search query: $value');
           },
         ),
-        Categories(categories: categories)
+        Categories(categories: categories),
+        Collection(title: "For you", items: dummyData),
+        Collection(title: "Following", items: dummyData),
+        Collection(title: "Dresses", items: dummyData),
+        Collection(title: "Bottoms", items: dummyData),
       ],
     ));
   }

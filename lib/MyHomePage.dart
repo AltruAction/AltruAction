@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recloset/Components/BottomNavigationBar.dart';
 import 'package:recloset/Pages/QrCodeScanner.dart';
 
 import './Pages/Profile.dart';
@@ -20,10 +21,9 @@ TextStyle getOptionStyle() {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 1;
 
-  static List<Widget> _widgetOptions = <Widget>[
+  static final List<Widget> _widgetOptions = <Widget>[
     Home(),
     AddItem(),
-    // QrCodeScanner(),
     Profile(),
   ];
 
@@ -39,28 +39,26 @@ class _MyHomePageState extends State<MyHomePage> {
       // Appbar not needed
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.qr_code_scanner),
+            tooltip: 'Open QR Code Scanner',
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const QrCodeScanner(),
+              ));
+            },
+          ),
+        ],
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Add Entry',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.face),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green[300],
-        onTap: _onItemTapped,
+      bottomNavigationBar: AppNavigationBar(
+        onItemTapped: (int idx) {
+          _onItemTapped(idx);
+        },
+        selectedIndex: _selectedIndex,
       ),
     );
   }

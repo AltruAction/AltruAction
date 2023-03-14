@@ -6,7 +6,8 @@ import 'package:recloset/Components/Subheader.dart';
 import 'package:recloset/Types/CommonTypes.dart';
 
 class FilterModal extends StatefulWidget {
-  const FilterModal({super.key});
+  final Function() onApply;
+  const FilterModal({super.key, required this.onApply});
 
   @override
   State<FilterModal> createState() => _FilterModalState();
@@ -59,7 +60,15 @@ class _FilterModalState extends State<FilterModal> {
             CheckboxInput(
                 label: "Meet-up",
                 onChange: (newValue) =>
-                    toggleDealOption(newValue, ItemDealOption.meetup))
+                    toggleDealOption(newValue, ItemDealOption.meetup)),
+            FilledButton(
+                style: FilledButton.styleFrom(
+                    minimumSize: const Size.fromHeight(40)),
+                onPressed: () {
+                  Navigator.pop(context);
+                  widget.onApply();
+                },
+                child: const Text("APPLY"))
           ],
         ));
   }

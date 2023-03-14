@@ -11,7 +11,10 @@ void showFilterModal(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return Padding(
-          padding: MediaQuery.of(context).viewInsets, child: FilterModal());
+          padding: MediaQuery.of(context).viewInsets,
+          child: FilterModal(
+            onApply: () {},
+          ));
     },
   );
 }
@@ -31,7 +34,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final List<CategoryType> categories = [
+  static List<CategoryType> categories = [
     CategoryType("assets/shirt.png", "Tops"),
     CategoryType("assets/shirt.png", "Bottoms"),
     CategoryType("assets/shirt.png", "Dresses"),
@@ -41,7 +44,7 @@ class _HomeState extends State<Home> {
     CategoryType("assets/shirt.png", "Others"),
   ];
 
-  final List<ItemCardData> dummyData = [
+  static List<ItemCardData> dummyData = [
     ItemCardData(0, "White shirt", "assets/shirt.png", 10),
     ItemCardData(1, "Blue shirt", "assets/shirt.png", 5),
     ItemCardData(2, "Green shirt", "assets/shirt.png", 7),
@@ -51,6 +54,11 @@ class _HomeState extends State<Home> {
   ];
 
   var _searchValue = "";
+  var _items = dummyData;
+
+  void filter() {
+    // TODO: Add filter function
+  }
 
   @override
   Widget build(BuildContext context) {

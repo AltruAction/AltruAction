@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:recloset/Components/Categories.dart';
-import 'package:recloset/Components/Category.dart';
 import 'package:recloset/Components/Collection.dart';
-import 'package:recloset/Components/ItemCard.dart';
+import 'package:recloset/Components/FilterModal.dart';
 import 'package:recloset/Components/SearchBar.dart';
 import "CollectionPage.dart";
+
+void showFilterModal(BuildContext context) {
+  showModalBottomSheet(
+    isScrollControlled: true,
+    context: context,
+    builder: (BuildContext context) {
+      return Padding(
+          padding: MediaQuery.of(context).viewInsets, child: FilterModal());
+    },
+  );
+}
 
 class CategoryType {
   String image;
@@ -48,25 +58,39 @@ class _HomeState extends State<Home> {
         body: ListView(
       scrollDirection: Axis.vertical,
       children: <Widget>[
-        SearchBar(
-          hintText: 'Search',
-          onChanged: (value) {
-            // Do something with the search query
-            setState(() {
-              _searchValue = value;
-            });
-          },
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => CollectionPage(
-                collection: dummyData,
-                title: "Search Results",
-                isSearch: true,
-                searchQuery: _searchValue,
-              ),
-            ),
-          ),
-        ),
+        Row(children: [
+          Expanded(
+              flex: 8,
+              child: SearchBar(
+                hintText: 'Search',
+                onChanged: (value) {
+                  // Do something with the search query
+                  setState(() {
+                    _searchValue = value;
+                  });
+                },
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CollectionPage(
+                      collection: dummyData,
+                      title: "Search Results",
+                      isSearch: true,
+                      searchQuery: _searchValue,
+                    ),
+                  ),
+                ),
+              )),
+          Expanded(
+              flex: 2,
+              child: Container(
+                  margin: const EdgeInsets.all(10),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showFilterModal(context);
+                    },
+                    child: const Icon(Icons.filter_list),
+                  )))
+        ]),
         Categories(categories: categories),
         Collection(title: "For you", items: dummyData),
         Collection(title: "Following", items: dummyData),

@@ -45,8 +45,10 @@ class _CollectionState extends State<Collection> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>
-                            CollectionPage(collection: widget.items),
+                        builder: (context) => CollectionPage(
+                          collection: widget.items,
+                          title: widget.title,
+                        ),
                       ),
                     );
                   },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recloset/Components/BottomNavigationBar.dart';
 import 'package:recloset/Pages/QrCodeScanner.dart';
 
 import './Pages/Profile.dart';
@@ -53,24 +54,11 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Add Entry',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.face),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green[300],
-        onTap: _onItemTapped,
+      bottomNavigationBar: AppNavigationBar(
+        onItemTapped: (int idx) {
+          _onItemTapped(idx);
+        },
+        selectedIndex: _selectedIndex,
       ),
     );
   }

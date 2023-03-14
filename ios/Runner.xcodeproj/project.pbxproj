@@ -85,7 +85,6 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
->>>>>>> origin
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (

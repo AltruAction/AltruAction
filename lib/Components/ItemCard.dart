@@ -33,8 +33,8 @@ class _ItemCardState extends State<ItemCard> {
                         alignment: Alignment.topLeft,
                         child: Image.asset(
                           widget.imagePath,
-                          height: 150,
-                          width: 150,
+                          height: 140,
+                          width: 140,
                         )),
                     Align(
                         alignment: Alignment.topLeft,

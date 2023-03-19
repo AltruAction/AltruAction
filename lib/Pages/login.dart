@@ -21,9 +21,7 @@ class Login extends StatelessWidget {
                 clientId: 'clientId',
                 loadingIndicator: const CircularProgressIndicator(),
                 onSignedIn: (UserCredential credential) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MyHomePage(title: 'ReCloset',),
-                  ));
+                  Navigator.pop(context);
                 }
               ),
             )

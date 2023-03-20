@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:recloset/Components/ItemCard.dart';
 import 'package:recloset/Pages/CollectionPage.dart';
+import 'package:recloset/Types/CommonTypes.dart';
 
 class ItemCardData {
   // TODO: Change to UUID?
@@ -9,8 +10,11 @@ class ItemCardData {
   String name;
   String imagePath;
   int credits;
+  ItemCondition condition;
+  List<ItemDealOption> dealOptions;
 
-  ItemCardData(this.id, this.name, this.imagePath, this.credits);
+  ItemCardData(this.id, this.name, this.imagePath, this.credits, this.condition,
+      this.dealOptions);
 }
 
 class Collection extends StatefulWidget {

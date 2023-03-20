@@ -6,7 +6,7 @@ import 'package:recloset/Components/Subheader.dart';
 import 'package:recloset/Types/CommonTypes.dart';
 
 class FilterModal extends StatefulWidget {
-  final Function() onApply;
+  final Function(FilterState) onApply;
   const FilterModal({super.key, required this.onApply});
 
   @override
@@ -14,9 +14,9 @@ class FilterModal extends StatefulWidget {
 }
 
 class _FilterModalState extends State<FilterModal> {
-  late ItemCondition? condition = ItemCondition.none;
-  late int? minPrice;
-  late int? maxPrice;
+  ItemCondition? condition = ItemCondition.none;
+  int? minPrice;
+  int? maxPrice = -1;
   List<ItemDealOption> dealOptions = [];
 
   void toggleDealOption(bool isSelected, ItemDealOption dealOption) {
@@ -66,7 +66,9 @@ class _FilterModalState extends State<FilterModal> {
                     minimumSize: const Size.fromHeight(40)),
                 onPressed: () {
                   Navigator.pop(context);
-                  widget.onApply();
+                  var newFilterState =
+                      FilterState(condition, dealOptions, maxPrice, minPrice);
+                  widget.onApply(newFilterState);
                 },
                 child: const Text("APPLY"))
           ],

@@ -66,3 +66,19 @@ class Item {
       this.status,
       this.transactions);
 }
+
+class FilterState {
+  late ItemCondition? condition;
+  late int? minPrice;
+  late int? maxPrice;
+  late List<ItemDealOption> dealOptions;
+
+  FilterState.empty() {
+    condition = ItemCondition.none;
+    minPrice = -1;
+    maxPrice = -1;
+    dealOptions = [];
+  }
+
+  FilterState(this.condition, this.dealOptions, this.maxPrice, this.minPrice);
+}

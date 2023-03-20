@@ -33,7 +33,7 @@ class CategoryType {
 }
 
 class Home extends StatefulWidget {
-  Home({Key? key}) : super(key: key);
+  const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -132,19 +132,10 @@ class _HomeState extends State<Home> {
                           filterState = newState;
                           _displayedItems = filter(_items);
                         });
-                        print(filterState.condition);
-                        print(filterState.minPrice);
-                        print(filterState.maxPrice);
-                        print(filterState.dealOptions);
                       }, () {
-                        print("Check clear");
                         setState(() {
                           filterState = FilterState.empty();
                           _displayedItems = _items;
-                          print(filterState.condition);
-                          print(filterState.minPrice);
-                          print(filterState.maxPrice);
-                          print(filterState.dealOptions);
                         });
                       });
                     },

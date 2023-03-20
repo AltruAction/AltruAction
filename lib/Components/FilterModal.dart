@@ -47,7 +47,7 @@ class _FilterModalState extends State<FilterModal> {
                 items: ItemCondition.values
                     .map((option) => DropdownMenuItem(
                           value: option,
-                          child: Text(option.name),
+                          child: Text(option.displayName),
                         ))
                     .toList(),
                 onChanged: (value) => setState(() {

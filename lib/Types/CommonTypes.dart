@@ -21,6 +21,27 @@ enum ItemCondition {
   heavilyUsed
 }
 
+extension ItemConditionExtension on ItemCondition {
+  String get displayName {
+    switch (this) {
+      case ItemCondition.none:
+        return "None";
+      case ItemCondition.brandNew:
+        return "Brand New";
+      case ItemCondition.likeNew:
+        return "Like New";
+      case ItemCondition.lightlyUsed:
+        return "Lightly Used";
+      case ItemCondition.wellUsed:
+        return "Well Used";
+      case ItemCondition.heavilyUsed:
+        return "Heavily Used";
+      default:
+        return "";
+    }
+  }
+}
+
 enum ItemStatus { open, reserved, given }
 
 enum ItemDealOption { delivery, meetup }

@@ -3,10 +3,12 @@ import 'package:recloset/Components/Categories.dart';
 import 'package:recloset/Components/Collection.dart';
 import 'package:recloset/Components/FilterModal.dart';
 import 'package:recloset/Components/SearchBar.dart';
+import 'package:recloset/Data/Data.dart';
 import 'package:recloset/Types/CommonTypes.dart';
 import "CollectionPage.dart";
 
-void showFilterModal(BuildContext context, Function setState) {
+void showFilterModal(BuildContext context, FilterState filterState,
+    Function setState, void Function() reset) {
   showModalBottomSheet(
     isScrollControlled: true,
     context: context,
@@ -14,10 +16,11 @@ void showFilterModal(BuildContext context, Function setState) {
       return Padding(
           padding: MediaQuery.of(context).viewInsets,
           child: FilterModal(
-            onApply: (newState) {
-              setState(newState);
-            },
-          ));
+              filterState: filterState,
+              onApply: (newState) {
+                setState(newState);
+              },
+              onClear: reset));
     },
   );
 }
@@ -47,62 +50,47 @@ class _HomeState extends State<Home> {
     CategoryType("assets/shirt.png", "Others"),
   ];
 
-  static List<ItemCardData> dummyData = [
-    ItemCardData(0, "White shirt", "assets/shirt.png", 10,
-        ItemCondition.brandNew, [ItemDealOption.delivery]),
-    ItemCardData(1, "Blue shirt", "assets/shirt.png", 5,
-        ItemCondition.heavilyUsed, [ItemDealOption.meetup]),
-    ItemCardData(
-        2,
-        "Green shirt",
-        "assets/shirt.png",
-        7,
-        ItemCondition.lightlyUsed,
-        [ItemDealOption.meetup, ItemDealOption.delivery]),
-    ItemCardData(3, "Yellow shirt", "assets/shirt.png", 4,
-        ItemCondition.likeNew, [ItemDealOption.delivery]),
-    ItemCardData(4, "Orange shirt", "assets/shirt.png", 9,
-        ItemCondition.wellUsed, [ItemDealOption.meetup]),
-    ItemCardData(
-        5,
-        "Purple shirt",
-        "assets/shirt.png",
-        2,
-        ItemCondition.brandNew,
-        [ItemDealOption.meetup, ItemDealOption.delivery]),
-  ];
-
   var _searchValue = "";
-  var _items = dummyData;
+  final _items = DummyData.itemCardData;
+  var _displayedItems = DummyData.itemCardData;
   var filterState = FilterState.empty();
 
-  void filter(ItemCardData items) {
-    var filtered = _items;
+  List<ItemCardData> filter(List<ItemCardData> items) {
+    var filtered = items;
+
+    // filter out elements by chosen condition
     if (filterState.condition != ItemCondition.none) {
       filtered = filtered
           .where((element) => element.condition == filterState.condition)
           .toList();
     }
 
+    // filter elements out whose credits exceed min price
     if (filterState.minPrice != null && filterState.minPrice! >= 0) {
       filtered = filtered
           .where((element) => element.credits >= filterState.minPrice!)
           .toList();
     }
 
-    if (filterState.minPrice != null && filterState.minPrice! >= 0) {
-      filtered = filtered
-          .where((element) => element.credits >= filterState.minPrice!)
-          .toList();
-    }
-
+    // filter elements out whose credits exceed max price
     if (filterState.maxPrice != null && filterState.maxPrice! >= 0) {
       filtered = filtered
-          .where((element) => element.credits >= filterState.maxPrice!)
+          .where((element) => element.credits <= filterState.maxPrice!)
           .toList();
     }
 
-    // add filter for item deal option
+    // add filter for item deal option if deal options were chosen
+    filtered = filtered.where((element) {
+      if (filterState.dealOptions.isNotEmpty) {
+        var chosenSet = filterState.dealOptions.toSet();
+        var intersection = chosenSet.intersection(element.dealOptions.toSet());
+        return intersection.isNotEmpty;
+      } else {
+        return true;
+      }
+    }).toList();
+
+    return filtered;
   }
 
   @override
@@ -125,7 +113,7 @@ class _HomeState extends State<Home> {
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => CollectionPage(
-                      collection: dummyData,
+                      collection: DummyData.itemCardData,
                       title: "Search Results",
                       isSearch: true,
                       searchQuery: _searchValue,
@@ -139,19 +127,35 @@ class _HomeState extends State<Home> {
                   margin: const EdgeInsets.all(10),
                   child: ElevatedButton(
                     onPressed: () {
-                      showFilterModal(context, (newState) {
-                        filterState = newState;
-                        print(filterState);
+                      showFilterModal(context, filterState, (newState) {
+                        setState(() {
+                          filterState = newState;
+                          _displayedItems = filter(_items);
+                        });
+                        print(filterState.condition);
+                        print(filterState.minPrice);
+                        print(filterState.maxPrice);
+                        print(filterState.dealOptions);
+                      }, () {
+                        print("Check clear");
+                        setState(() {
+                          filterState = FilterState.empty();
+                          _displayedItems = _items;
+                          print(filterState.condition);
+                          print(filterState.minPrice);
+                          print(filterState.maxPrice);
+                          print(filterState.dealOptions);
+                        });
                       });
                     },
                     child: const Icon(Icons.filter_list),
                   )))
         ]),
         Categories(categories: categories),
-        Collection(title: "For you", items: _items),
-        Collection(title: "Following", items: _items),
-        Collection(title: "Dresses", items: _items),
-        Collection(title: "Bottoms", items: _items),
+        Collection(title: "For you", items: _displayedItems),
+        Collection(title: "Following", items: _displayedItems),
+        Collection(title: "Dresses", items: _displayedItems),
+        Collection(title: "Bottoms", items: _displayedItems),
       ],
     ));
   }

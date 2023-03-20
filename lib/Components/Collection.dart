@@ -12,9 +12,10 @@ class ItemCardData {
   int credits;
   ItemCondition condition;
   List<ItemDealOption> dealOptions;
+  ItemCategory category;
 
   ItemCardData(this.id, this.name, this.imagePath, this.credits, this.condition,
-      this.dealOptions);
+      this.dealOptions, this.category);
 }
 
 class Collection extends StatefulWidget {

@@ -7,23 +7,28 @@ import 'package:recloset/Types/CommonTypes.dart';
 
 class FilterModal extends StatefulWidget {
   final Function(FilterState) onApply;
-  const FilterModal({super.key, required this.onApply});
+  FilterState filterState;
+  final void Function() onClear;
+  FilterModal(
+      {super.key,
+      required this.filterState,
+      required this.onApply,
+      required this.onClear});
 
   @override
   State<FilterModal> createState() => _FilterModalState();
 }
 
 class _FilterModalState extends State<FilterModal> {
-  ItemCondition? condition = ItemCondition.none;
-  int? minPrice;
-  int? maxPrice = -1;
-  List<ItemDealOption> dealOptions = [];
-
   void toggleDealOption(bool isSelected, ItemDealOption dealOption) {
     if (isSelected) {
-      dealOptions.add(dealOption);
+      setState(() {
+        widget.filterState.dealOptions.add(dealOption);
+      });
     } else {
-      dealOptions.remove(dealOption);
+      setState(() {
+        widget.filterState.dealOptions.remove(dealOption);
+      });
     }
   }
 
@@ -31,14 +36,14 @@ class _FilterModalState extends State<FilterModal> {
   Widget build(BuildContext context) {
     return Container(
         height: 600,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
         child: Column(
           children: [
             const Header(text: "Item Condition"),
             const Subheader(text: "Condition"),
             DropdownButton(
                 isExpanded: true,
-                value: condition,
+                value: widget.filterState.condition,
                 items: ItemCondition.values
                     .map((option) => DropdownMenuItem(
                           value: option,
@@ -46,31 +51,76 @@ class _FilterModalState extends State<FilterModal> {
                         ))
                     .toList(),
                 onChanged: (value) => setState(() {
-                      condition = value;
+                      widget.filterState.condition = value;
                     })),
             const Header(text: "Price (in Credits)"),
-            const NumberField(hintText: "Minimum"),
-            const NumberField(hintText: "Maximum"),
+            NumberField(
+                initialValue: widget.filterState.minPrice != -1
+                    ? widget.filterState.minPrice.toString()
+                    : null,
+                onChange: (newMinPrice) {
+                  setState(() {
+                    if (newMinPrice == '') {
+                      widget.filterState.minPrice = -1;
+                    } else {
+                      widget.filterState.minPrice = int.parse(newMinPrice);
+                    }
+                  });
+                },
+                hintText: "Minimum"),
+            NumberField(
+                initialValue: widget.filterState.maxPrice != -1
+                    ? widget.filterState.maxPrice.toString()
+                    : null,
+                onChange: (newMaxPrice) {
+                  setState(() {
+                    widget.filterState.maxPrice = int.parse(newMaxPrice);
+                  });
+                },
+                hintText: "Maximum"),
             const Header(text: "Deal Option"),
             const Subheader(text: "Deal Option"),
             CheckboxInput(
                 label: "Mailing & Delivery",
                 onChange: (newValue) =>
-                    toggleDealOption(newValue, ItemDealOption.delivery)),
+                    toggleDealOption(newValue, ItemDealOption.delivery),
+                isSelected: widget.filterState.dealOptions
+                    .contains(ItemDealOption.delivery)),
             CheckboxInput(
-                label: "Meet-up",
-                onChange: (newValue) =>
-                    toggleDealOption(newValue, ItemDealOption.meetup)),
-            FilledButton(
-                style: FilledButton.styleFrom(
-                    minimumSize: const Size.fromHeight(40)),
-                onPressed: () {
-                  Navigator.pop(context);
-                  var newFilterState =
-                      FilterState(condition, dealOptions, maxPrice, minPrice);
-                  widget.onApply(newFilterState);
-                },
-                child: const Text("APPLY"))
+              label: "Meet-up",
+              onChange: (newValue) =>
+                  toggleDealOption(newValue, ItemDealOption.meetup),
+              isSelected: widget.filterState.dealOptions
+                  .contains(ItemDealOption.meetup),
+            ),
+            SizedBox(
+                width: 500,
+                height: 40,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            fixedSize: const Size(100, 40)),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          widget.onApply(widget.filterState);
+                        },
+                        child: const Text("APPLY")),
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            fixedSize: const Size(100, 40)),
+                        onPressed: () {
+                          widget.onClear();
+                          setState(() {
+                            Navigator.pop(context);
+                            widget.filterState = widget.filterState;
+                          });
+                        },
+                        child: const Text("CLEAR"))
+                  ],
+                ))
           ],
         ));
   }

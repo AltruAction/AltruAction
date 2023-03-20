@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
+import 'package:recloset/Components/AchievementCard.dart';
 import 'package:recloset/Components/ProfilePageHeader.dart';
 import 'package:recloset/Components/ProfilePageName.dart';
 import 'package:recloset/Components/ProfilePicture.dart';
@@ -103,17 +104,23 @@ class _ProfilePageState extends State<Profile> with SingleTickerProviderStateMix
                       height: 400,
                       child: Center(child: TabBarView(
                         controller: _tabController,
-                        children: const [
-                          Center(
+                        children: [
+                          const Center(
                             child: ProfilePageItemList()
                           ),
-                          Center(
+                          const Center(
                             child: ProfilePageItemList()
                           ),
-                          Center(
-                            child: Text(
-                              'Statistics',
-                            ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: const [
+                                            AchievementCard(title: "this is a great achievement",
+                                                            description: "donated more than 10 items",
+                                                            imagePath: "assets/achievement.png"),
+                                            AchievementCard(title: "this is a great achievement",
+                                                            description: "donated more than 10 items",
+                                                            imagePath: "assets/achievement.png"),
+                                            ]
                           ),
                         ],
                       ),

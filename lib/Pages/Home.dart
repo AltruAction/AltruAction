@@ -42,12 +42,12 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   static List<CategoryType> categories = [
     CategoryType("assets/shirt.png", "Tops"),
-    CategoryType("assets/shirt.png", "Bottoms"),
-    CategoryType("assets/shirt.png", "Dresses"),
-    CategoryType("assets/shirt.png", "Outerwear"),
-    CategoryType("assets/shirt.png", "Activewear"),
-    CategoryType("assets/shirt.png", "Accessories"),
-    CategoryType("assets/shirt.png", "Others"),
+    CategoryType("assets/pants.png", "Bottoms"),
+    CategoryType("assets/dress.png", "Dresses"),
+    CategoryType("assets/outerwear.png", "Outerwear"),
+    CategoryType("assets/activewear.png", "Activewear"),
+    CategoryType("assets/gloves.png", "Accessories"),
+    CategoryType("assets/others.png", "Others"),
   ];
 
   var _searchValue = "";

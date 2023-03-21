@@ -3,6 +3,17 @@ import 'package:recloset/Components/Carousel.dart';
 import 'package:flutter/services.dart';
 
 class Item extends StatefulWidget {
+  final String name;
+  final int credits;
+
+  final int likes;
+  final int condition;
+  final String[] dealOption;
+  final String[] imageUrls;
+  
+  
+
+
   @override
   State<StatefulWidget> createState() => _ItemState();
 }

@@ -56,7 +56,7 @@ class _CarouselState extends State<Carousel> {
           ),
         ),
         Container(
-          transform: Matrix4.translationValues(0.0, -70, 0.0),
+          // transform: Matrix4.translationValues(0.0, -70, 0.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: imgList.asMap().entries.map((entry) {

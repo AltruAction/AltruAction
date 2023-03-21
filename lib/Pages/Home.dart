@@ -4,6 +4,7 @@ import 'package:recloset/Components/Category.dart';
 import 'package:recloset/Components/Collection.dart';
 import 'package:recloset/Components/ItemCard.dart';
 import 'package:recloset/Components/SearchBar.dart';
+import "CollectionPage.dart";
 
 class CategoryType {
   String image;
@@ -12,7 +13,14 @@ class CategoryType {
   CategoryType(this.image, this.categoryName);
 }
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  Home({Key? key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final List<CategoryType> categories = [
     CategoryType("assets/shirt.png", "Tops"),
     CategoryType("assets/shirt.png", "Bottoms"),
@@ -32,7 +40,7 @@ class Home extends StatelessWidget {
     ItemCardData(5, "Purple shirt", "assets/shirt.png", 2),
   ];
 
-  Home({Key? key}) : super(key: key);
+  var _searchValue = "";
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +52,20 @@ class Home extends StatelessWidget {
           hintText: 'Search',
           onChanged: (value) {
             // Do something with the search query
-            print('Search query: $value');
+            setState(() {
+              _searchValue = value;
+            });
           },
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => CollectionPage(
+                collection: dummyData,
+                title: "Search Results",
+                isSearch: true,
+                searchQuery: _searchValue,
+              ),
+            ),
+          ),
         ),
         Categories(categories: categories),
         Collection(title: "For you", items: dummyData),

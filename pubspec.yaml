@@ -40,6 +40,11 @@ dependencies:
   firebase_auth: ^4.2.10
   qr_code_scanner: ^1.0.1
   carousel_slider: ^4.2.1
+  flutterfire_ui: ^0.4.3+20
+  google_sign_in: ^5.4.4
+  firebase_ui_auth: ^1.1.16
+  firebase_ui_oauth_google: ^1.0.21
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:

@@ -4,6 +4,8 @@ import 'package:recloset/Components/BottomNavigationBar.dart';
 import 'package:recloset/Components/Collection.dart';
 import 'package:recloset/Components/ItemCard.dart';
 
+import 'Item.dart';
+
 class CollectionPage extends StatefulWidget {
   final String title;
   final bool isSearch;
@@ -51,10 +53,16 @@ class _CollectionPageState extends State<CollectionPage> {
                 crossAxisCount: 2,
                 scrollDirection: Axis.vertical,
                 children: widget.collection
-                    .map((item) => ItemCard(
-                        imagePath: item.imagePath,
-                        name: item.name,
-                        credits: item.credits))
+                    .map((item) => InkWell(
+                        child: ItemCard(
+                          imagePath: item.imagePath,
+                          name: item.name,
+                          credits: item.credits,
+                        ),
+                        onTap: () =>
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Item(id: item.id),
+                            ))))
                     .toList())
           ],
         ));

@@ -5,14 +5,12 @@ class ItemCard extends StatefulWidget {
   final String imagePath;
   final String name;
   final int credits;
-  final Function() onPress;
 
   const ItemCard({
     Key? key,
     required this.imagePath,
     required this.name,
     required this.credits,
-    required this.onPress,
   }) : super(key: key);
 
   @override

@@ -66,15 +66,16 @@ class _CollectionState extends State<Collection> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: widget.items
-                    .map((item) => ItemCard(
+                    .map((item) => InkWell(
+                        child: ItemCard(
                           imagePath: item.imagePath,
                           name: item.name,
                           credits: item.credits,
-                          onPress: () =>
-                              Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => Item(),
-                          )),
-                        ))
+                        ),
+                        onTap: () =>
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Item(id: item.id),
+                            ))))
                     .toList(),
               ))
         ]));

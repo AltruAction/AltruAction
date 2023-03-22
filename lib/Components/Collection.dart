@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:recloset/Components/ItemCard.dart';
 import 'package:recloset/Pages/Item.dart';
+import 'package:recloset/Pages/CollectionPage.dart';
 
 class ItemCardData {
   // TODO: Change to UUID?
@@ -42,7 +43,16 @@ class _CollectionState extends State<Collection> {
                   )),
               const Spacer(),
               GestureDetector(
-                  onTap: () => print("tapped more"),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => CollectionPage(
+                          collection: widget.items,
+                          title: widget.title,
+                        ),
+                      ),
+                    );
+                  },
                   child: const Text(
                     "More",
                     style: TextStyle(
@@ -56,15 +66,16 @@ class _CollectionState extends State<Collection> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: widget.items
-                    .map((item) => ItemCard(
+                    .map((item) => InkWell(
+                        child: ItemCard(
                           imagePath: item.imagePath,
                           name: item.name,
                           credits: item.credits,
-                          onPress: () =>
-                              Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => Item(),
-                          )),
-                        ))
+                        ),
+                        onTap: () =>
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Item(id: item.id),
+                            ))))
                     .toList(),
               ))
         ]));

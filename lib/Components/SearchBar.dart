@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 class SearchBar extends StatefulWidget {
   final String hintText;
   final Function(String) onChanged;
+  final Function() onTap;
 
-  SearchBar({
+  const SearchBar({
+    Key? key,
     required this.hintText,
     required this.onChanged,
-  });
+    required this.onTap,
+  }) : super(key: key);
 
   @override
   _SearchBarState createState() => _SearchBarState();
@@ -55,8 +58,7 @@ class _SearchBarState extends State<SearchBar> {
             decoration: InputDecoration(
               hintText: widget.hintText,
               suffixIcon: IconButton(
-                  onPressed: () => print("test"),
-                  icon: const Icon(Icons.search)),
+                  onPressed: widget.onTap, icon: const Icon(Icons.search)),
               border: InputBorder.none,
             ),
           ),

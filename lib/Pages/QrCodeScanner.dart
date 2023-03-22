@@ -13,7 +13,6 @@ class QrCodeScanner extends StatefulWidget {
 
 class _QRCodeScannerState extends State<QrCodeScanner> {
   Barcode? result;
-  bool? isValidQRCode;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
@@ -127,9 +126,10 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
       setState(() {
         result = scanData;
       });
+
       const isValid = false;
       if (!isValid) {
-        _showInvalidQRCodePopup();
+        _showInvalidQRCodePopup(controller);
       }
       // else {
       //   _navigateToSuccessPage();
@@ -146,7 +146,11 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
     }
   }
 
-  void _showInvalidQRCodePopup() {
+  void _showInvalidQRCodePopup(QRViewController controller) {
+    // setState(() {
+    //   this.controller = controller;
+    // });
+    controller!.pauseCamera();
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -155,7 +159,10 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
           content: Text('Please scan a valid QR Code'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                controller!.resumeCamera();
+                Navigator.of(context).pop();
+              },
               child: Text('Close'),
             ),
           ],

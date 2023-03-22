@@ -144,9 +144,6 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
   }
 
   void _showInvalidQRCodePopup(QRViewController controller) {
-    // setState(() {
-    //   this.controller = controller;
-    // });
     showDialog(
       context: context,
       builder: (BuildContext context) {

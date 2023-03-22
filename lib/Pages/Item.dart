@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recloset/Components/Carousel.dart';
 import 'package:flutter/services.dart';
 
+import '../Components/ItemBottomNavigationBar.dart';
 import '../utils/utils.dart';
 
 final List<String> imgList = [
@@ -33,11 +34,11 @@ class _ItemState extends State<Item> {
   late final String description;
   late final String location;
   late final String status;
-  late final List<String> dealOption;
+  late final String dealOptions;
+  late final String date;
 
   @override
   void initState() {
-    super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -53,118 +54,161 @@ class _ItemState extends State<Item> {
     description = "This is a regular, human, non-stolen shirt.";
     location = "Woodlands";
     status = convertToUserFriendly("OPEN");
-    dealOption = List.empty();
+    dealOptions = ["Meet Up", "Delivery"].join(', ');
+    date = "22/02/2023";
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView(shrinkWrap: true, children: [
-      Container(
-          height: MediaQuery.of(context).size.height * 0.3,
-          child: Carousel(imageUrls: imgList)),
-      const Text(
-        'Title',
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
+      body: ListView(shrinkWrap: true, children: [
+        Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: Carousel(imageUrls: imgList)),
+        Container(
+          padding: EdgeInsets.only(left: 10.0),
+          child: Text(
+            '$name',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.left,
+          ),
         ),
+        Container(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_today,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(width: 10),
+                    Text('Posted on $date'),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.monetization_on,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(width: 10),
+                    Text('$credits'),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.thumb_up,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(width: 10),
+                    Text('$likes'),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.info,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(width: 10),
+                    Text('$status'),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.category,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(width: 10),
+                    Text('$category'),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(width: 10),
+                    Text('$condition'),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.person,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(width: 10),
+                    Text('$target'),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_on,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(width: 10),
+                    Text('$location'),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.local_offer,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(width: 10),
+                    Text('$dealOptions'),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.description,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(width: 10),
+                    Text('$description'),
+                  ],
+                ),
+              ],
+            )),
+      ]),
+      bottomNavigationBar: ItemBottomNavigationBar(
+          isOwner: true,
+          liked: true,
+          likes: likes,
+          onLikePressed: () => {},
+          onShowContactInfoPressed: () => {},
+          onEditPressed: () => {},
+          onGenerateQRCodePressed: () => {}),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: const Icon(Icons.arrow_back),
       ),
-      Column(
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.calendar_today,
-                color: Colors.grey,
-              ),
-              SizedBox(width: 10),
-              Text('Week Posted'),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.monetization_on),
-              SizedBox(width: 10),
-              Text('Credits'),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.thumb_up),
-              SizedBox(width: 10),
-              Text('Likes'),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.info),
-              SizedBox(width: 10),
-              Text('Status'),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.category),
-              SizedBox(width: 10),
-              Text('Category'),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.description),
-              SizedBox(width: 10),
-              Text('Description'),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.check_circle),
-              SizedBox(width: 10),
-              Text('Condition'),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.person),
-              SizedBox(width: 10),
-              Text('Gender'),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.location_on),
-              SizedBox(width: 10),
-              Text('Location'),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.info_outline),
-              SizedBox(width: 10),
-              Text('Status'),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.local_offer),
-              SizedBox(width: 10),
-              Text('Deal Options'),
-            ],
-          ),
-        ],
-      )
-    ]));
+      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+    );
   }
 
   @override

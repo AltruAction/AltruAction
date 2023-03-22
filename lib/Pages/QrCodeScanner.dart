@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import 'SuccessPage.dart';
+
 class QrCodeScanner extends StatefulWidget {
   const QrCodeScanner({Key? key}) : super(key: key);
 
@@ -42,46 +44,40 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        if (result != null)
-                          if (result!.format == 'QR')
-                            // TODO in future instead of displaying this, this will be the success page
-                            Text(
-                                'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                          else
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                RichText(
-                                  softWrap: true,
-                                  text: const TextSpan(
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.black,
-                                    ),
-                                    children: [
-                                      TextSpan(text: 'Scan the '),
-                                      TextSpan(
-                                        text: 'QR Code',
-                                        style: TextStyle(
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                          text:
-                                              ' of the item \n to mark it as received.'),
-                                    ],
-                                  ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              softWrap: true,
+                              text: const TextSpan(
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black,
                                 ),
-                                const Text(
+                                children: [
+                                  TextSpan(text: 'Scan the '),
+                                  TextSpan(
+                                    text: 'QR Code',
                                     style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black,
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
                                     ),
-                                    'Note: This is irreverisble.'),
-                              ],
-                            )
+                                  ),
+                                  TextSpan(
+                                      text:
+                                          ' of the item \n to mark it as received.'),
+                                ],
+                              ),
+                            ),
+                            const Text(
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black,
+                                ),
+                                'Note: This is irreverisble.'),
+                          ],
+                        )
                       ]),
                 ),
               ))
@@ -127,13 +123,14 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
         result = scanData;
       });
 
-      const isValid = false;
+      const isValid = true;
+      const itemName = "White Top";
+      controller!.pauseCamera();
       if (!isValid) {
         _showInvalidQRCodePopup(controller);
+      } else {
+        _navigateToSuccessPage(itemName);
       }
-      // else {
-      //   _navigateToSuccessPage();
-      // }
     });
   }
 
@@ -150,7 +147,6 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
     // setState(() {
     //   this.controller = controller;
     // });
-    controller!.pauseCamera();
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -171,12 +167,11 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
     );
   }
 
-  void _navigateToSuccessPage() {
-    // navigate to success page
-    //   Navigator.push(
-    // context,
-    // MaterialPageRoute(builder: (context) => SuccessPage()),
-    // );
+  void _navigateToSuccessPage(name) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SuccessPage(name: name)),
+    );
   }
 
   @override

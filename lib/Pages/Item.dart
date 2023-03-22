@@ -74,11 +74,15 @@ class _ItemState extends State<Item> {
         children: [
           Row(
             children: [
-              Icon(Icons.calendar_today),
+              Icon(
+                Icons.calendar_today,
+                color: Colors.grey,
+              ),
               SizedBox(width: 10),
               Text('Week Posted'),
             ],
           ),
+          SizedBox(height: 10),
           Row(
             children: [
               Icon(Icons.monetization_on),
@@ -86,6 +90,7 @@ class _ItemState extends State<Item> {
               Text('Credits'),
             ],
           ),
+          SizedBox(height: 10),
           Row(
             children: [
               Icon(Icons.thumb_up),
@@ -93,6 +98,7 @@ class _ItemState extends State<Item> {
               Text('Likes'),
             ],
           ),
+          SizedBox(height: 10),
           Row(
             children: [
               Icon(Icons.info),
@@ -100,6 +106,7 @@ class _ItemState extends State<Item> {
               Text('Status'),
             ],
           ),
+          SizedBox(height: 10),
           Row(
             children: [
               Icon(Icons.category),
@@ -107,6 +114,7 @@ class _ItemState extends State<Item> {
               Text('Category'),
             ],
           ),
+          SizedBox(height: 10),
           Row(
             children: [
               Icon(Icons.description),
@@ -114,6 +122,7 @@ class _ItemState extends State<Item> {
               Text('Description'),
             ],
           ),
+          SizedBox(height: 10),
           Row(
             children: [
               Icon(Icons.check_circle),
@@ -121,6 +130,7 @@ class _ItemState extends State<Item> {
               Text('Condition'),
             ],
           ),
+          SizedBox(height: 10),
           Row(
             children: [
               Icon(Icons.person),
@@ -128,6 +138,7 @@ class _ItemState extends State<Item> {
               Text('Gender'),
             ],
           ),
+          SizedBox(height: 10),
           Row(
             children: [
               Icon(Icons.location_on),
@@ -135,6 +146,7 @@ class _ItemState extends State<Item> {
               Text('Location'),
             ],
           ),
+          SizedBox(height: 10),
           Row(
             children: [
               Icon(Icons.info_outline),
@@ -142,6 +154,7 @@ class _ItemState extends State<Item> {
               Text('Status'),
             ],
           ),
+          SizedBox(height: 10),
           Row(
             children: [
               Icon(Icons.local_offer),

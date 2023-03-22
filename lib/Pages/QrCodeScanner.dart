@@ -13,6 +13,7 @@ class QrCodeScanner extends StatefulWidget {
 
 class _QRCodeScannerState extends State<QrCodeScanner> {
   Barcode? result;
+  bool? isValidQRCode;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
@@ -43,44 +44,45 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         if (result != null)
-                          // TODO in future instead of displaying this, this will be the success page
-                          Text(
-                              'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                        else
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              RichText(
-                                softWrap: true,
-                                text: const TextSpan(
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                  children: [
-                                    TextSpan(text: 'Scan the '),
-                                    TextSpan(
-                                      text: 'QR Code',
-                                      style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                      ),
+                          if (result!.format == 'QR')
+                            // TODO in future instead of displaying this, this will be the success page
+                            Text(
+                                'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
+                          else
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                RichText(
+                                  softWrap: true,
+                                  text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.black,
                                     ),
-                                    TextSpan(
-                                        text:
-                                            ' of the item \n to mark it as received.'),
-                                  ],
-                                ),
-                              ),
-                              const Text(
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black,
+                                    children: [
+                                      TextSpan(text: 'Scan the '),
+                                      TextSpan(
+                                        text: 'QR Code',
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                          text:
+                                              ' of the item \n to mark it as received.'),
+                                    ],
                                   ),
-                                  'Note: This is irreverisble.'),
-                            ],
-                          )
+                                ),
+                                const Text(
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                    ),
+                                    'Note: This is irreverisble.'),
+                              ],
+                            )
                       ]),
                 ),
               ))
@@ -125,6 +127,13 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
       setState(() {
         result = scanData;
       });
+      const isValid = false;
+      if (!isValid) {
+        _showInvalidQRCodePopup();
+      }
+      // else {
+      //   _navigateToSuccessPage();
+      // }
     });
   }
 
@@ -135,6 +144,32 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
         const SnackBar(content: Text('no Permission')),
       );
     }
+  }
+
+  void _showInvalidQRCodePopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Invalid QR Code'),
+          content: Text('Please scan a valid QR Code'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _navigateToSuccessPage() {
+    // navigate to success page
+    //   Navigator.push(
+    // context,
+    // MaterialPageRoute(builder: (context) => SuccessPage()),
+    // );
   }
 
   @override

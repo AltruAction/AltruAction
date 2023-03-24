@@ -6,7 +6,7 @@ import 'package:recloset/Types/CommonTypes.dart';
 
 class ItemCardData {
   // TODO: Change to UUID?
-  int id;
+  String id;
   String name;
   String imagePath;
   int credits;

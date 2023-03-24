@@ -4,6 +4,7 @@ import 'package:recloset/Components/Collection.dart';
 import 'package:recloset/Components/FilterModal.dart';
 import 'package:recloset/Components/SearchBar.dart';
 import 'package:recloset/Data/Data.dart';
+import 'package:recloset/DatabaseService.dart';
 import 'package:recloset/Types/CommonTypes.dart';
 import "CollectionPage.dart";
 
@@ -27,9 +28,9 @@ void showFilterModal(BuildContext context, FilterState filterState,
 
 class CategoryType {
   String image;
-  String categoryName;
+  ItemCategory category;
 
-  CategoryType(this.image, this.categoryName);
+  CategoryType(this.image, this.category);
 }
 
 class Home extends StatefulWidget {
@@ -40,20 +41,36 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  static List<CategoryType> categories = [
-    CategoryType("assets/shirt.png", "Tops"),
-    CategoryType("assets/pants.png", "Bottoms"),
-    CategoryType("assets/dress.png", "Dresses"),
-    CategoryType("assets/outerwear.png", "Outerwear"),
-    CategoryType("assets/activewear.png", "Activewear"),
-    CategoryType("assets/gloves.png", "Accessories"),
-    CategoryType("assets/others.png", "Others"),
-  ];
-
-  var _searchValue = "";
-  final _items = DummyData.itemCardData;
-  var _displayedItems = DummyData.itemCardData;
+  String _searchValue = "";
+  List<ItemCardData> _items = [];
+  List<ItemCardData> _displayedItems = [];
   var filterState = FilterState.empty();
+
+  @override
+  void initState() {
+    super.initState();
+    // Retrieve item records from Firestore
+    getData();
+  }
+
+  void getData() async {
+    var items = await DatabaseService().getItems();
+    setState(() {
+      print(items);
+      _items = items?.values.toList() ?? [];
+      _displayedItems = _items;
+    });
+  }
+
+  static List<CategoryType> categories = [
+    CategoryType("assets/shirt.png", ItemCategory.tops),
+    CategoryType("assets/pants.png", ItemCategory.bottoms),
+    CategoryType("assets/dress.png", ItemCategory.dresses),
+    CategoryType("assets/outerwear.png", ItemCategory.outerwear),
+    CategoryType("assets/activewear.png", ItemCategory.activewear),
+    CategoryType("assets/gloves.png", ItemCategory.accessories),
+    CategoryType("assets/others.png", ItemCategory.others),
+  ];
 
   List<ItemCardData> filter(List<ItemCardData> items) {
     var filtered = items;
@@ -93,6 +110,12 @@ class _HomeState extends State<Home> {
     return filtered;
   }
 
+  List<ItemCardData> filterCategory(
+      List<ItemCardData> items, ItemCategory category) {
+    var filtered = items;
+    return filtered.where((element) => element.category == category).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,7 +136,7 @@ class _HomeState extends State<Home> {
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => CollectionPage(
-                      collection: DummyData.itemCardData,
+                      collection: _items,
                       title: "Search Results",
                       isSearch: true,
                       searchQuery: _searchValue,
@@ -144,9 +167,15 @@ class _HomeState extends State<Home> {
         ]),
         Categories(categories: categories),
         Collection(title: "For you", items: _displayedItems),
-        Collection(title: "Following", items: _displayedItems),
-        Collection(title: "Dresses", items: _displayedItems),
-        Collection(title: "Bottoms", items: _displayedItems),
+        ...ItemCategory.values.map((e) {
+          var categoryItems = filterCategory(_displayedItems, e);
+          if (categoryItems.isNotEmpty) {
+            return Collection(title: e.displayName, items: categoryItems);
+          } else {
+            // display nothing
+            return const SizedBox.shrink();
+          }
+        })
       ],
     ));
   }

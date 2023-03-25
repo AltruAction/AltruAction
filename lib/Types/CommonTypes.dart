@@ -8,6 +8,29 @@ enum ItemCategory {
   others
 }
 
+extension ItemCategoryExtension on ItemCategory {
+  String get displayName {
+    switch (this) {
+      case ItemCategory.accessories:
+        return "Accessories";
+      case ItemCategory.activewear:
+        return "Activewear";
+      case ItemCategory.bottoms:
+        return "Bottoms";
+      case ItemCategory.dresses:
+        return "Dresses";
+      case ItemCategory.others:
+        return "Others";
+      case ItemCategory.outerwear:
+        return "Outerwear";
+      case ItemCategory.tops:
+        return "Tops";
+      default:
+        return "";
+    }
+  }
+}
+
 enum ItemSizes { xsMinus, xs, s, m, l, xl, xlPlus }
 
 enum ItemTarget { male, female, unisex }
@@ -44,7 +67,7 @@ extension ItemConditionExtension on ItemCondition {
 
 enum ItemStatus { open, reserved, given }
 
-enum ItemDealOption { delivery, meetup }
+enum ItemDealOption { delivery, meetup, none }
 
 enum TransactionStatus { give, given, cancel }
 

@@ -7,6 +7,8 @@ import 'package:recloset/Components/ProfilePageHeader.dart';
 import 'package:recloset/Components/ProfilePageName.dart';
 import 'package:recloset/Components/ProfilePicture.dart';
 import 'package:recloset/Pages/login.dart';
+import 'package:recloset/Types/UserTypes.dart';
+import 'package:recloset/UserService.dart';
 
 import '../Components/ProfilePageItemList.dart';
 import '../app_state.dart';
@@ -31,7 +33,21 @@ class _ProfilePageState extends State<Profile> with SingleTickerProviderStateMix
         ));
       }
     });
+    String? uuid = Provider.of<ApplicationState>(context, listen: false).user?.uid;
+    if (uuid != null) {
+      fetchAndUpdateUserState(uuid);
+    }
     super.initState();
+  }
+
+  fetchAndUpdateUserState(String uuid) async {
+    final provider = Provider.of<ApplicationState>(context, listen: false);
+
+    provider.updateIsFetchingUserState(true);
+
+    UserState? user = await UserService.getUser(uuid);
+    provider.updateUserState(user);
+    provider.updateIsFetchingUserState(false);
   }
 
   @override
@@ -40,8 +56,8 @@ class _ProfilePageState extends State<Profile> with SingleTickerProviderStateMix
       backgroundColor: Colors.white,
       body: Consumer<ApplicationState>(
               builder: (context, appState, _) {
-                if (appState.user == null) {
-                  return const CircularProgressIndicator();
+                if (appState.user == null || appState.isFetchingUserState) {
+                  return const Center(child: CircularProgressIndicator());
                 }
                 return ListView(
                   scrollDirection: Axis.vertical,

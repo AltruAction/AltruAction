@@ -22,10 +22,12 @@ class ItemCardData {
 class Collection extends StatefulWidget {
   final String title;
   final List<ItemCardData> items;
+  final bool showTitle;
   const Collection({
     Key? key,
     required this.title,
     required this.items,
+    this.showTitle = true,
   }) : super(key: key);
 
   @override
@@ -38,7 +40,7 @@ class _CollectionState extends State<Collection> {
     return Container(
         padding: const EdgeInsets.all(10),
         child: Column(children: [
-          Row(
+          if (widget.showTitle) ...[Row(
             children: [
               Align(
                   alignment: Alignment.topLeft,
@@ -65,7 +67,7 @@ class _CollectionState extends State<Collection> {
                         decoration: TextDecoration.underline),
                   ))
             ],
-          ),
+          )],
           SizedBox(
               height: 200,
               child: ListView(

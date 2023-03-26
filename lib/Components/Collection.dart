@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:recloset/Components/ItemCard.dart';
+import 'package:recloset/Pages/Item.dart';
 import 'package:recloset/Pages/CollectionPage.dart';
 import 'package:recloset/Types/CommonTypes.dart';
 
@@ -70,10 +71,16 @@ class _CollectionState extends State<Collection> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: widget.items
-                    .map((item) => ItemCard(
-                        imagePath: item.imagePath,
-                        name: item.name,
-                        credits: item.credits))
+                    .map((item) => InkWell(
+                        child: ItemCard(
+                          imagePath: item.imagePath,
+                          name: item.name,
+                          credits: item.credits,
+                        ),
+                        onTap: () =>
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Item(id: item.id),
+                            ))))
                     .toList(),
               ))
         ]));

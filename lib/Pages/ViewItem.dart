@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recloset/Components/Carousel.dart';
 import 'package:flutter/services.dart';
+import 'package:recloset/Pages/QrCodeGen.dart';
 
 import '../Components/ItemBottomNavigationBar.dart';
 import '../utils/utils.dart';
@@ -194,13 +195,21 @@ class _ViewItemState extends State<ViewItem> {
             )),
       ]),
       bottomNavigationBar: ItemBottomNavigationBar(
-          isOwner: true,
-          liked: true,
-          likes: likes,
-          onLikePressed: () => {},
-          onShowContactInfoPressed: () => {},
-          onEditPressed: () => {},
-          onGenerateQRCodePressed: () => {}),
+        isOwner: true,
+        liked: true,
+        likes: likes,
+        onLikePressed: () => {},
+        onShowContactInfoPressed: () => {},
+        onEditPressed: () => {},
+        onGenerateQRCodePressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => QRCodeGen(
+              key: Key(widget.id),
+              id: widget.id,
+            ),
+          ));
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pop();

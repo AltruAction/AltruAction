@@ -45,7 +45,8 @@ class ItemBottomNavigationBar extends StatelessWidget {
               ],
             ),
           ElevatedButton(
-            onPressed: onShowContactInfoPressed,
+            onPressed:
+                isOwner ? onGenerateQRCodePressed : onShowContactInfoPressed,
             child: Text(isOwner ? 'Generate QR Code' : 'Show Contact Info'),
           ),
         ],

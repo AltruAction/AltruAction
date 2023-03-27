@@ -5,7 +5,6 @@ class ItemCard extends StatefulWidget {
   final String imagePath;
   final String name;
   final int credits;
-  // final Function() onPress;
 
   const ItemCard({
     Key? key,

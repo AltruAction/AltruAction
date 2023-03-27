@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:recloset/Components/ItemCard.dart';
+import 'package:recloset/Pages/ItemDetail.dart';
 import 'package:recloset/Pages/CollectionPage.dart';
 import 'package:recloset/Types/CommonTypes.dart';
 
@@ -21,10 +21,12 @@ class ItemCardData {
 class Collection extends StatefulWidget {
   final String title;
   final List<ItemCardData> items;
+  final bool showTitle;
   const Collection({
     Key? key,
     required this.title,
     required this.items,
+    this.showTitle = true,
   }) : super(key: key);
 
   @override
@@ -37,7 +39,7 @@ class _CollectionState extends State<Collection> {
     return Container(
         padding: const EdgeInsets.all(10),
         child: Column(children: [
-          Row(
+          if (widget.showTitle) ...[Row(
             children: [
               Align(
                   alignment: Alignment.topLeft,
@@ -64,16 +66,22 @@ class _CollectionState extends State<Collection> {
                         decoration: TextDecoration.underline),
                   ))
             ],
-          ),
+          )],
           SizedBox(
               height: 200,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: widget.items
-                    .map((item) => ItemCard(
-                        imagePath: item.imagePath,
-                        name: item.name,
-                        credits: item.credits))
+                    .map((item) => InkWell(
+                        child: ItemCard(
+                          imagePath: item.imagePath,
+                          name: item.name,
+                          credits: item.credits,
+                        ),
+                        onTap: () =>
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ItemDetail(id: item.id),
+                            ))))
                     .toList(),
               ))
         ]));

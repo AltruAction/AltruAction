@@ -227,7 +227,7 @@ class _AddItemState extends State<AddItem> {
                           "images":
                               listing.items.map((e) => e.downloadUrl).toList(),
                           "title": titleController.text,
-                          "credits": creditsController.text,
+                          "credits": int.tryParse(creditsController.text) ?? 0,
                           "size": _clothesSize,
                           "location": locationController.text,
                           // "owner": FirebaseAuth.instance.currentUser!.uid,

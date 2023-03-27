@@ -4,7 +4,7 @@ import 'package:recloset/Components/Collection.dart';
 import 'package:recloset/Components/FilterModal.dart';
 import 'package:recloset/Components/SearchBar.dart';
 import 'package:recloset/Data/Data.dart';
-import 'package:recloset/DatabaseService.dart';
+import 'package:recloset/Services/ItemService.dart';
 import 'package:recloset/Types/CommonTypes.dart';
 import "CollectionPage.dart";
 
@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
   }
 
   void getData() async {
-    var items = await DatabaseService().getItems();
+    var items = await ItemService().getItems();
     setState(() {
       print(items);
       _items = DummyData.itemCardData;

@@ -49,6 +49,7 @@ class _ViewItemState extends State<ViewItem> {
       DeviceOrientation.portraitDown,
     ]);
     // TODO call api to get details
+
     name = "White Top";
     imageUrls = imgList;
     credits = 1;

@@ -2,9 +2,41 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:recloset/Components/Collection.dart';
 import 'package:recloset/Types/CommonTypes.dart';
 
-// reference: https://medium.com/google-developer-experts/firestore-database-flutter-38c9a0cc77c7
+class Item {
+  late final String name;
+  late final List<String> imageUrls;
+  late final int credits;
+  late final int likes;
+  late final String condition;
+  late final String target;
+  late final String category;
+  late final String description;
+  late final String location;
+  late final String status;
+  late final String dealOptions;
+  late final String date;
+  late final String owner;
 
-class DatabaseService {
+  Item.fromSnapshot(DocumentSnapshot snapshot) {
+    final data = snapshot.data()! as Map<String, dynamic>;
+    name = data['name'];
+    imageUrls = List<String>.from(data['imageUrls']);
+    credits = data['credits'];
+    likes = data['likes'];
+    condition = data['condition'];
+    target = data['target'];
+    category = data['category'];
+    description = data['description'];
+    location = data['location'];
+    status = data['status'];
+    dealOptions = data['dealOptions'];
+    date = data['date'];
+    owner = data['owner'];
+  }
+}
+
+// reference: https://medium.com/google-developer-experts/firestore-database-flutter-38c9a0cc77c
+class ItemService {
   // TODO: Refactor from singleton?
   static var db = FirebaseFirestore.instance;
   // Future<String?> addUser({
@@ -25,6 +57,12 @@ class DatabaseService {
   //     return 'Error adding user';
   //   }
   // }
+
+  Future<Item> getDocumentById(String id) async {
+    final doc = await db.collection('items').doc(id).get();
+    final item = Item.fromSnapshot(doc);
+    return item;
+  }
 
   Future<Map<String, ItemCardData>?> getItems() async {
     try {

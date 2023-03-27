@@ -8,7 +8,7 @@ import 'package:recloset/Components/ProfilePageName.dart';
 import 'package:recloset/Components/ProfilePicture.dart';
 import 'package:recloset/Pages/login.dart';
 import 'package:recloset/Types/UserTypes.dart';
-import 'package:recloset/UserService.dart';
+import 'package:recloset/services/UserService.dart';
 
 import '../Components/ProfilePageItemList.dart';
 import '../app_state.dart';

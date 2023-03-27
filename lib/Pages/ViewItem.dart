@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recloset/Components/Carousel.dart';
 import 'package:flutter/services.dart';
+import 'package:recloset/Components/ContactDialog.dart';
 import 'package:recloset/Pages/QrCodeGen.dart';
 
 import '../Components/ItemBottomNavigationBar.dart';
@@ -37,6 +38,7 @@ class _ViewItemState extends State<ViewItem> {
   late final String status;
   late final String dealOptions;
   late final String date;
+  late final String email;
 
   @override
   void initState() {
@@ -57,6 +59,8 @@ class _ViewItemState extends State<ViewItem> {
     status = convertToUserFriendly("OPEN");
     dealOptions = ["Meet Up", "Delivery"].join(', ');
     date = "22/02/2023";
+    // TODO fetch from user database
+    email = "abc@gmail.com";
     super.initState();
   }
 
@@ -107,7 +111,7 @@ class _ViewItemState extends State<ViewItem> {
                 Row(
                   children: [
                     Icon(
-                      Icons.thumb_up,
+                      Icons.favorite,
                       color: Colors.grey,
                     ),
                     SizedBox(width: 10),
@@ -173,7 +177,7 @@ class _ViewItemState extends State<ViewItem> {
                 Row(
                   children: [
                     Icon(
-                      Icons.local_offer,
+                      Icons.present_to_all,
                       color: Colors.grey,
                     ),
                     SizedBox(width: 10),
@@ -195,11 +199,18 @@ class _ViewItemState extends State<ViewItem> {
             )),
       ]),
       bottomNavigationBar: ItemBottomNavigationBar(
-        isOwner: true,
+        isOwner: false,
         liked: true,
         likes: likes,
         onLikePressed: () => {},
-        onShowContactInfoPressed: () => {},
+        onShowContactInfoPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return ContactDialog(email: email);
+            },
+          );
+        },
         onEditPressed: () => {},
         onGenerateQRCodePressed: () {
           Navigator.of(context).push(MaterialPageRoute(

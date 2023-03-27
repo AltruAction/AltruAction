@@ -7,39 +7,20 @@ import 'package:recloset/Types/CommonTypes.dart';
 class DatabaseService {
   // TODO: Refactor from singleton?
   static var db = FirebaseFirestore.instance;
-  // Future<String?> addUser({
-  //   required String fullName,
-  //   required String age,
-  //   required String email,
-  // }) async {
-  //   try {
-  //     CollectionReference users =
-  //         FirebaseFirestore.instance.collection('users');
-  //     // Call the user's CollectionReference to add a new user
-  //     await users.doc(email).set({
-  //       'full_name': fullName,
-  //       'age': age,
-  //     });
-  //     return 'success';
-  //   } catch (e) {
-  //     return 'Error adding user';
-  //   }
-  // }
 
   Future<Map<String, ItemCardData>?> getItems() async {
     try {
       Map<String, ItemCardData> result = Map();
       await db.collection("items").get().then((event) {
-        print(event.docs);
         for (var doc in event.docs) {
           var data = doc.data();
           List<dynamic> dataDealOptions = data["dealOption"];
           List<dynamic>? images = data["images"];
-
+          
           var newEntry = ItemCardData(
               doc.id,
-              data["title"],
-              images != null && images.isNotEmpty ? data["images"][0] : "",
+              data["title"] ?? "",
+              images != null && images.isNotEmpty && images[0] != null ? images[0] : "",
               data["credits"] ?? 1,
               ItemCondition.values.firstWhere(
                   (element) =>

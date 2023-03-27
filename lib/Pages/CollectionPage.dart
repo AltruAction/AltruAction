@@ -51,6 +51,7 @@ class _CollectionPageState extends State<CollectionPage> {
                 crossAxisCount: 2,
                 scrollDirection: Axis.vertical,
                 children: widget.collection
+                    .where((item) => item.name.toLowerCase().contains(widget.searchQuery.toLowerCase()))
                     .map((item) => ItemCard(
                         imagePath: item.imagePath,
                         name: item.name,

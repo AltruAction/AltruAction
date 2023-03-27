@@ -3,7 +3,8 @@ import 'package:recloset/Components/Carousel.dart';
 import 'package:flutter/services.dart';
 import 'package:recloset/Components/ContactDialog.dart';
 import 'package:recloset/Pages/QrCodeGen.dart';
-
+import 'package:provider/provider.dart';
+import 'package:recloset/app_state.dart';
 import '../Components/ItemBottomNavigationBar.dart';
 import '../utils/utils.dart';
 
@@ -38,6 +39,7 @@ class _ViewItemState extends State<ViewItem> {
   late final String status;
   late final String dealOptions;
   late final String date;
+  late final String owner;
   late final String email;
 
   @override
@@ -59,6 +61,7 @@ class _ViewItemState extends State<ViewItem> {
     status = convertToUserFriendly("OPEN");
     dealOptions = ["Meet Up", "Delivery"].join(', ');
     date = "22/02/2023";
+    owner = "12345";
     // TODO fetch from user database
     email = "abc@gmail.com";
     super.initState();
@@ -177,7 +180,7 @@ class _ViewItemState extends State<ViewItem> {
                 Row(
                   children: [
                     Icon(
-                      Icons.present_to_all,
+                      Icons.handshake,
                       color: Colors.grey,
                     ),
                     SizedBox(width: 10),
@@ -199,7 +202,7 @@ class _ViewItemState extends State<ViewItem> {
             )),
       ]),
       bottomNavigationBar: ItemBottomNavigationBar(
-        isOwner: false,
+        isOwner: isOwner(),
         liked: true,
         likes: likes,
         onLikePressed: () => {},
@@ -227,6 +230,15 @@ class _ViewItemState extends State<ViewItem> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
+  }
+
+  isOwner() {
+    String? uuid =
+        Provider.of<ApplicationState>(context, listen: false).user?.uid;
+    if (uuid != null) {
+      return uuid == owner;
+    }
+    return false;
   }
 
   @override

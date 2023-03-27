@@ -2,7 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:recloset/Services/ItemService.dart';
+import 'package:recloset/Services/TransactionService.dart';
+import 'package:recloset/app_state.dart';
 
 import '../utils/utils.dart';
 import 'SuccessPage.dart';
@@ -119,18 +123,28 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
     setState(() {
       this.controller = controller;
     });
-    controller.scannedDataStream.listen((scanData) {
+    controller.scannedDataStream.listen((scanData) async {
       setState(() {
         result = scanData;
       });
       bool isValid =
           isValidStartToken(scanData.code) && verifySignature(scanData.code);
-      const itemName = "White Top";
+
       controller!.pauseCamera();
       if (!isValid) {
         _showInvalidQRCodePopup(controller);
       } else {
-        _navigateToSuccessPage(itemName);
+        String id = getMessage(scanData.code!).split("-")[1];
+
+        Item item = await ItemService().getItemById(id);
+        if (item == null || item.status == "GIVEN") {
+          _showInvalidItemPopup(controller);
+          return;
+        }
+        String userId =
+            Provider.of<ApplicationState>(context, listen: false).user!.uid;
+        TransactionService().createTransaction(item.owner, id, userId);
+        _navigateToSuccessPage(item.name);
       }
     });
   }
@@ -142,6 +156,27 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
         const SnackBar(content: Text('no Permission')),
       );
     }
+  }
+
+  void _showInvalidItemPopup(QRViewController controller) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Invalid Item'),
+          content: Text('Item has already been given or does not exist'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                controller!.resumeCamera();
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showInvalidQRCodePopup(QRViewController controller) {

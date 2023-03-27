@@ -24,6 +24,11 @@ String generateAndSignMessage(String id) {
   return signedMessage;
 }
 
+String getMessage(String signedMessage) {
+  int messageLength = signedMessage.indexOf(splitToken);
+  return signedMessage.substring(0, messageLength);
+}
+
 bool verifySignature(String? signedMessage) {
   if (signedMessage == null) {
     return false;

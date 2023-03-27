@@ -58,7 +58,7 @@ class ItemService {
   //   }
   // }
 
-  Future<Item> getDocumentById(String id) async {
+  Future<Item> getItemById(String id) async {
     final doc = await db.collection('items').doc(id).get();
     final item = Item.fromSnapshot(doc);
     return item;

@@ -3,8 +3,8 @@ import 'package:recloset/Components/Category.dart';
 import 'package:recloset/Data/Data.dart';
 import 'package:recloset/Pages/CollectionPage.dart';
 import 'package:recloset/Pages/Home.dart';
+import 'package:recloset/Services/ItemService.dart';
 
-import '../services/ItemService.dart';
 import '../Types/CommonTypes.dart';
 import 'Collection.dart';
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../utils/utils.dart';
 
@@ -49,9 +50,15 @@ class _QRCodeGenState extends State<QRCodeGen> {
             children: [
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Spacer(),
-                Text(
-                  '$widget.name',
-                  style: TextStyle(fontSize: 24),
+                Container(
+                  width: 200,
+                  child: Text(
+                    '$widget.name',
+                    softWrap: true,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 24),
+                  ),
                 ),
                 Expanded(
                   child: TextButton.icon(

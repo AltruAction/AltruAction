@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:screenshot/screenshot.dart';
 
 import '../utils/utils.dart';
 
@@ -108,79 +105,39 @@ class _QRCodeGenState extends State<QRCodeGen> {
     );
   }
 
-  // _shareQRCode() async {
-  //   final directory = (await getApplicationDocumentsDirectory()).path;
-  //   await screenshotController
-  //       .capture(delay: const Duration(milliseconds: 10))
-  //       .then((Uint8List image) async {
-  //     if (image != null) {
-  //       final directory = await getApplicationDocumentsDirectory();
-  //       final imagePath = await File('${directory.path}/image.png').create();
-  //       await imagePath.writeAsBytes(image);
-
-  //       /// Share Plugin
-  //       await Share.shareFiles([imagePath.path]);
-  //     }
-  //   });
-  //   // screenshotController
-  //   //     .capture()
-  //   //     .then((Uint8List image) {
-  //   //       // try {
-  //   //       String fileName = DateTime.now().microsecondsSinceEpoch.toString();
-  //   //       final imagePath = await File('$directory/$fileName.png').create();
-  //   //       await imagePath.writeAsBytes(image);
-  //   //       // ignore: deprecated_member_use
-  //   //       Share.shareFiles([imagePath.path]);
-  //   //       // } catch (error) {}
-  //   //     } )
-  //   //     .catchError((onError) {
-  //   //   print(onError);
-  //   // });
-  // }
-
-  // TODO fix logic for share
   _shareQRCode(context) async {
-    // try {
-    RenderRepaintBoundary? boundary =
-        context.findRenderObject() as RenderRepaintBoundary;
-    var image = await boundary.toImage();
-    ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
-    Uint8List pngBytes = byteData!.buffer.asUint8List();
+    final QrPainter painter = QrPainter(
+      data: token,
+      version: QrVersions.auto,
+      gapless: false,
+      emptyColor: Colors.white,
+      embeddedImage: await getImageFromAsset('assets/qrLogo.png'),
+      embeddedImageStyle: QrEmbeddedImageStyle(size: Size(165, 237)),
+    );
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    final ts = DateTime.now().millisecondsSinceEpoch.toString();
+    String path = '$tempPath/$ts.png';
+    final picData =
+        await painter.toImageData(900, format: ui.ImageByteFormat.png);
+    await writeToFile(picData!, path);
 
-    final tempDir = await getTemporaryDirectory();
-    final file = await new File('${tempDir.path}/image.png').create();
-    await file.writeAsBytes(pngBytes);
-    Share.shareFiles([file.path]);
-    // } catch (e) {
-    //   print(e.toString());
-    // }
+    await Share.shareFiles([path],
+        subject: 'QR Code for ${widget.name}',
+        text: 'Please scan me to complete the transaction for ${widget.name}');
   }
 
-  // _shareQRCode(context) async {
-  //   // try {`
-  //   final RenderBox box = context.findRenderObject() as RenderBox;
-  //   final ui.Image img = new ;
-  //   final QrPainter painter = QrPainter(
-  //     data: widget.token,
-  //     version: QrVersions.auto,
-  //     gapless: false,
-  //     embeddedImage: img,
-  //     embeddedImageStyle: QrEmbeddedImageStyle(size: Size(55, 79)),
-  //   );
-  //   final ByteData? imageData =
-  //       await painter.toImageData(300.0);
-  //   RenderRepaintBoundary? boundary =
-  //       context.findRenderObject() as RenderRepaintBoundary;
-  //   var image = await boundary!.toImage();
-  //   ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
-  //   Uint8List pngBytes = byteData!.buffer.asUint8List();
+  Future<void> writeToFile(ByteData data, String path) async {
+    final buffer = data.buffer;
+    await File(path).writeAsBytes(
+        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+  }
 
-  //   final tempDir = await getTemporaryDirectory();
-  //   final file = await new File('${tempDir.path}/image.png').create();
-  //   await file.writeAsBytes(pngBytes);
-  //   Share.shareFiles([file.path]);
-  //   // } catch (e) {
-  //   //   print(e.toString());
-  //   // }
-  // }
+  Future<ui.Image> getImageFromAsset(String path) async {
+    final data = await rootBundle.load(path);
+    final bytes = data.buffer.asUint8List();
+    final image = await decodeImageFromList(bytes);
+
+    return image;
+  }
 }

@@ -203,10 +203,8 @@ class _ViewItemState extends State<ViewItem> {
         onEditPressed: () => {},
         onGenerateQRCodePressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => QRCodeGen(
-              key: Key(widget.id),
-              id: widget.id,
-            ),
+            builder: (context) =>
+                QRCodeGen(key: Key(widget.id), id: widget.id, name: name),
           ));
         },
       ),

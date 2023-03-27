@@ -42,7 +42,13 @@ class _AddPhotoState extends State<AddPhoto> {
       final ref = firebase_storage.FirebaseStorage.instance
           .ref(destination)
           .child('file/');
+
       await ref.putFile(_image!);
+      var downloadUrl = await ref.getDownloadURL();
+      Provider.of<ListingProvider>(context, listen: false)
+          .addDownloadUrl(downloadUrl, widget.index);
+      // print("downloadUrl");
+      // print(downloadUrl);
     } catch (e) {
       print('error occured');
     }

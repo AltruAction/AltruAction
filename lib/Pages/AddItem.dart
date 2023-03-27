@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:recloset/Components/AddPhotoCollection.dart';
 import 'package:recloset/Components/ChooseCategory.dart';
@@ -18,6 +20,7 @@ class AddItem extends StatefulWidget {
 class _AddItemState extends State<AddItem> {
   final _formKey = GlobalKey<FormState>();
   final List<String> _secondCategorySelected = <String>[];
+  String _clothesSize = "s";
   final List<String> _dealOptionSelected = <String>[];
   List<String> tags = [
     "Tops",
@@ -31,6 +34,8 @@ class _AddItemState extends State<AddItem> {
 
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
+  final creditsController = TextEditingController();
+  final locationController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -113,25 +118,46 @@ class _AddItemState extends State<AddItem> {
                   'Well used',
                   'Heavily used'
                 ]),
-
-                // TODO: add price/tokens/wtv in the future
-                // const Text(
-                //   "Price",
-                //   textAlign: TextAlign.left,
-                // ),
-                // TextFormField(
-                //   controller: priceController,
-                //   decoration: const InputDecoration(
-                //     border: OutlineInputBorder(),
-                //     hintText: 'Name your listing',
-                //   ),
-                //   validator: (String? value) {
-                //     if (value == null || value.isEmpty) {
-                //       return 'Please enter some text';
-                //     }
-                //     return null;
-                //   },
-                // ),
+                const Text(
+                  "Size",
+                  textAlign: TextAlign.left,
+                ),
+                Wrap(
+                  spacing: 5.0,
+                  children: ["XS--", "XS", "S", "M", "L", "XL", "XL++"]
+                      .map((String selectedSize) {
+                    return FilterChip(
+                      label: Text(selectedSize),
+                      selected: _clothesSize == selectedSize,
+                      onSelected: (bool value) {
+                        setState(() {
+                          if (value) {
+                            _clothesSize = selectedSize;
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+                const Text(
+                  "Credits",
+                  textAlign: TextAlign.left,
+                ),
+                TextFormField(
+                  controller: creditsController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Amount of credits you want to list',
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
                 const Text(
                   "Description",
                   textAlign: TextAlign.left,
@@ -149,7 +175,6 @@ class _AddItemState extends State<AddItem> {
                     return null;
                   },
                 ),
-
                 const Text(
                   "Deal Method",
                   textAlign: TextAlign.left,
@@ -176,7 +201,17 @@ class _AddItemState extends State<AddItem> {
                     );
                   }).toList(),
                 ),
-
+                const Text(
+                  "Location",
+                  textAlign: TextAlign.left,
+                ),
+                TextFormField(
+                  controller: locationController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Where do you want to meet up?',
+                  ),
+                ),
                 ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -190,8 +225,13 @@ class _AddItemState extends State<AddItem> {
                           "dealOption": _dealOptionSelected,
                           "description": descriptionController.text,
                           "images":
-                              listing.items.map((e) => e.image.path).toList(),
+                              listing.items.map((e) => e.downloadUrl).toList(),
                           "title": titleController.text,
+                          "credits": creditsController.text,
+                          "size": _clothesSize,
+                          "location": locationController.text,
+                          // "owner": FirebaseAuth.instance.currentUser!.uid,
+                          "timestamp": DateTime.now().millisecondsSinceEpoch,
                         };
                         db.collection("items").doc().set(item).onError(
                             (e, _) => print("Error writing document: $e"));

@@ -17,8 +17,11 @@ class ListingProvider extends ChangeNotifier {
 
   void add(Item item, int index) {
     _items.insert(index, item);
-    print(_items);
-    print("idiot");
+    notifyListeners();
+  }
+
+  void addDownloadUrl(String url, int index) {
+    _items[index].downloadUrl = url;
     notifyListeners();
   }
 
@@ -31,6 +34,7 @@ class ListingProvider extends ChangeNotifier {
 
 class Item {
   XFile image;
+  String? downloadUrl;
 
   Item(this.image);
 }

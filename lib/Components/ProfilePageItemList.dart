@@ -1,12 +1,19 @@
-import '../Components/Collection.dart';
+import 'package:flutter/material.dart';
+import 'package:recloset/Components/Collection.dart';
+
 import '../Types/CommonTypes.dart';
 
-class Store {
-  static Store store = new Store();
+class ProfilePageItemList extends StatefulWidget {
+  const ProfilePageItemList({Key? key}) : super(key: key);
+
+  @override
+  State<ProfilePageItemList> createState() => _ProfilePageItemListState();
 }
 
-class DummyData {
-  static List<ItemCardData> itemCardData = [
+class _ProfilePageItemListState extends State<ProfilePageItemList> {
+
+  final List<ItemCardData> dummyData = [
+
     ItemCardData("0", "White shirt", "assets/placeholder.jpg", 10,
         ItemCondition.brandNew, [ItemDealOption.delivery], ItemCategory.tops),
     ItemCardData("1", "Blue shirt", "assets/placeholder.jpg", 5,
@@ -32,4 +39,9 @@ class DummyData {
         [ItemDealOption.meetup, ItemDealOption.delivery],
         ItemCategory.tops),
   ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Collection(title: "", items: dummyData, showTitle: false);
+  }
 }

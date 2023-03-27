@@ -28,11 +28,11 @@ class _CategoryState extends State<Category> {
                       color: Colors.green,
                     ),
                     child: Padding(
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         child: Image.asset(
                           widget.imagePath,
-                          height: 50,
-                          width: 50,
+                          height: 30,
+                          width: 30,
                         )))),
             Text(widget.categoryName)
           ],

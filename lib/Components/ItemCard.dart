@@ -5,7 +5,6 @@ class ItemCard extends StatefulWidget {
   final String imagePath;
   final String name;
   final int credits;
-  // final Function() onPress;
 
   const ItemCard({
     Key? key,
@@ -19,6 +18,22 @@ class ItemCard extends StatefulWidget {
 }
 
 class _ItemCardState extends State<ItemCard> {
+  Image _getImage(String imagePath) {
+    Image defaultImage = Image.asset("assets/placeholder.png");
+    Image image = defaultImage;
+    if (imagePath != "") {
+      try {
+        image = Image(image: NetworkImage(imagePath));
+        return image;
+      } catch (e) {
+        print(e);
+        return defaultImage;
+      }
+    } else {
+      return defaultImage;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -31,11 +46,19 @@ class _ItemCardState extends State<ItemCard> {
                   children: [
                     Align(
                         alignment: Alignment.topLeft,
-                        child: Image.asset(
-                          widget.imagePath,
-                          height: 150,
-                          width: 150,
-                        )),
+                        child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1,
+                                    color: const Color.fromARGB(10, 0, 0, 0))),
+                            child: FadeInImage(
+                              placeholder: Image.asset(
+                                "assets/placeholder.png",
+                              ).image,
+                              image: _getImage(widget.imagePath).image,
+                              width: 140,
+                              height: 140,
+                            ))),
                     Align(
                         alignment: Alignment.topLeft,
                         child: Text(
@@ -45,7 +68,7 @@ class _ItemCardState extends State<ItemCard> {
                     Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "${widget.credits} credits",
+                          "${widget.credits} credit${widget.credits > 1 ? "s" : ""}",
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ))
                   ],

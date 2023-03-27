@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:recloset/Components/ItemCard.dart';
+import 'package:recloset/Pages/Item.dart';
+import 'package:recloset/Pages/CollectionPage.dart';
+import 'package:recloset/Types/CommonTypes.dart';
 
 class ItemCardData {
   // TODO: Change to UUID?
-  int id;
+  String id;
   String name;
   String imagePath;
   int credits;
+  ItemCondition condition;
+  List<ItemDealOption> dealOptions;
+  ItemCategory category;
 
-  ItemCardData(this.id, this.name, this.imagePath, this.credits);
+  ItemCardData(this.id, this.name, this.imagePath, this.credits, this.condition,
+      this.dealOptions, this.category);
 }
 
 class Collection extends StatefulWidget {
   final String title;
   final List<ItemCardData> items;
+  final bool showTitle;
   const Collection({
     Key? key,
     required this.title,
     required this.items,
+    this.showTitle = true,
   }) : super(key: key);
 
   @override
@@ -31,7 +40,7 @@ class _CollectionState extends State<Collection> {
     return Container(
         padding: const EdgeInsets.all(10),
         child: Column(children: [
-          Row(
+          if (widget.showTitle) ...[Row(
             children: [
               Align(
                   alignment: Alignment.topLeft,
@@ -41,7 +50,16 @@ class _CollectionState extends State<Collection> {
                   )),
               const Spacer(),
               GestureDetector(
-                  onTap: () => print("tapped more"),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => CollectionPage(
+                          collection: widget.items,
+                          title: widget.title,
+                        ),
+                      ),
+                    );
+                  },
                   child: const Text(
                     "More",
                     style: TextStyle(
@@ -49,16 +67,22 @@ class _CollectionState extends State<Collection> {
                         decoration: TextDecoration.underline),
                   ))
             ],
-          ),
+          )],
           SizedBox(
               height: 200,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: widget.items
-                    .map((item) => ItemCard(
-                        imagePath: item.imagePath,
-                        name: item.name,
-                        credits: item.credits))
+                    .map((item) => InkWell(
+                        child: ItemCard(
+                          imagePath: item.imagePath,
+                          name: item.name,
+                          credits: item.credits,
+                        ),
+                        onTap: () =>
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Item(id: item.id),
+                            ))))
                     .toList(),
               ))
         ]));

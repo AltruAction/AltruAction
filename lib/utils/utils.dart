@@ -12,7 +12,7 @@ String convertToUserFriendly(String word) {
 // TODO shift to more secure location for production
 String secretKey = "MarcusTaufiqCedricKevin";
 String splitToken = "||";
-String startToken = "reCloset";
+String startToken = "reCloset-";
 
 String generateAndSignMessage(String id) {
   String message = "$startToken-$id-${DateTime.now().millisecondsSinceEpoch}";
@@ -24,7 +24,10 @@ String generateAndSignMessage(String id) {
   return signedMessage;
 }
 
-bool verifySignature(String signedMessage) {
+bool verifySignature(String? signedMessage) {
+  if (signedMessage == null) {
+    return false;
+  }
   int messageLength = signedMessage.indexOf(splitToken);
   final message = signedMessage.substring(0, messageLength);
   final signatureString =
@@ -36,7 +39,10 @@ bool verifySignature(String signedMessage) {
   return ListEquality().equals(signature, calculatedSignature.bytes);
 }
 
-bool isValidStartToken(String toCheck) {
+bool isValidStartToken(String? toCheck) {
+  if (toCheck == null || toCheck.length <= startToken.length) {
+    return false;
+  }
   for (int i = 0; i < startToken.length; i++) {
     if (startToken[i] != toCheck[i]) {
       return false;

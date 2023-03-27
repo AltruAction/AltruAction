@@ -13,7 +13,8 @@ import '../utils/utils.dart';
 
 class QRCodeGen extends StatefulWidget {
   final String id;
-  const QRCodeGen({super.key, required this.id});
+  final String name;
+  const QRCodeGen({super.key, required this.id, required this.name});
 
   @override
   State<QRCodeGen> createState() => _QRCodeGenState();
@@ -52,7 +53,7 @@ class _QRCodeGenState extends State<QRCodeGen> {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Spacer(),
                 Text(
-                  'White Top',
+                  '$widget.name',
                   style: TextStyle(fontSize: 24),
                 ),
                 Expanded(

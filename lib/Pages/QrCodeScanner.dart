@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import '../utils/utils.dart';
 import 'SuccessPage.dart';
 
 class QrCodeScanner extends StatefulWidget {
@@ -122,8 +123,8 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
       setState(() {
         result = scanData;
       });
-
-      const isValid = true;
+      bool isValid =
+          isValidStartToken(scanData.code) && verifySignature(scanData.code);
       const itemName = "White Top";
       controller!.pauseCamera();
       if (!isValid) {

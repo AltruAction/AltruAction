@@ -33,7 +33,7 @@ class _ViewItemState extends State<ViewItem> {
   String name = "";
   List<String> imageUrls = List.empty();
   int credits = 0;
-  int likes = 0;
+  List<String> likes = [];
   String condition = "";
   String target = "";
   String category = "";
@@ -130,7 +130,7 @@ class _ViewItemState extends State<ViewItem> {
                       color: Colors.grey,
                     ),
                     SizedBox(width: 10),
-                    Text('$likes'),
+                    Text(likes.length.toString()),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -213,28 +213,48 @@ class _ViewItemState extends State<ViewItem> {
               ],
             )),
       ]),
-      bottomNavigationBar: ItemBottomNavigationBar(
-        isOwner: isOwner(),
-        liked: true,
-        likes: likes,
-        onLikePressed: () => {},
-        onShowContactInfoPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return ContactDialog(email: email);
-            },
-          );
-        },
-        onEditPressed: () => {},
-        onGenerateQRCodePressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                QRCodeGen(key: Key(widget.id), id: widget.id, name: name),
-          ));
-        },
-        isGiven: status == "Given",
-      ),
+      bottomNavigationBar: Consumer<ApplicationState>(builder: (context, appState, _) {
+        String? uid = appState.user?.uid;
+        return ItemBottomNavigationBar(
+          isOwner: isOwner(uid),
+          liked: likes.contains(uid),
+          likes: likes.length,
+          onLikePressed: () => {
+            if (likes.contains(uid) && uid != null) {
+              likes.remove(uid),
+              setState(() {
+                likes;
+              }),
+              UserService.updateLikeItem(uid, widget.id, false)
+            } else if (uid != null) {
+              likes.add(uid),
+              setState(() {
+                likes;
+              }),
+              UserService.updateLikeItem(uid, widget.id, true),
+
+            } else {
+              // todo: show popup to login to like
+            }
+          },
+          onShowContactInfoPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return ContactDialog(email: email);
+              },
+            );
+          },
+          onEditPressed: () => {},
+          onGenerateQRCodePressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) =>
+                  QRCodeGen(key: Key(widget.id), id: widget.id, name: name),
+            ));
+          },
+          isGiven: status == "Given",
+        );
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pop();
@@ -245,9 +265,7 @@ class _ViewItemState extends State<ViewItem> {
     );
   }
 
-  isOwner() {
-    String? uuid =
-        Provider.of<ApplicationState>(context, listen: false).user?.uid;
+  isOwner(String? uuid) {
     if (uuid != null) {
       return uuid == owner;
     }

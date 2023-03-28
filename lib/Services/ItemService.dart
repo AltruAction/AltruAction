@@ -6,7 +6,7 @@ class Item {
   late final String name;
   late final List<String> imageUrls;
   late final int credits;
-  late final int likes;
+  late final List<String> likes;
   late final String condition;
   late final String target;
   late final String category;
@@ -25,7 +25,7 @@ class Item {
         ? List.empty()
         : List<String>.from(data['images']);
     credits = data['credits'] ?? 0;
-    likes = data['likes'] == null ? 0 : List<String>.from(data['likes']).length;
+    likes = data['likes'] == null ? [] : List<String>.from(data['likes']);
     condition = data['condition'] ?? "";
     target = data['target'] ?? "";
     category = data['category'] ?? "";

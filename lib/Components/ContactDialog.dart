@@ -29,7 +29,7 @@ class ContactDialog extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text('Email address: '),
+                Text('Email: '),
                 GestureDetector(
                   onTap: () async {
                     final url = 'mailto:$email';

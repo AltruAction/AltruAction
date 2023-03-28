@@ -14,8 +14,9 @@ class Item {
   late final String location;
   late final String status;
   late final List<String> dealOptions;
-  late final String date;
+  late final int date;
   late final String owner;
+  late final String size;
 
   Item.fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data()! as Map<String, dynamic>;
@@ -24,6 +25,7 @@ class Item {
     imageUrls = data['images'] == null
         ? List.empty()
         : List<String>.from(data['images']);
+    print(imageUrls);
     credits = data['credits'] ?? 0;
     likes = data['likes'] == null ? [] : List<String>.from(data['likes']);
     condition = data['condition'] ?? "";
@@ -35,8 +37,9 @@ class Item {
     dealOptions = data['dealOption'] == null
         ? List.empty()
         : List<String>.from(data['dealOption']);
-    date = data['date'] ?? "";
+    date = data['timestamp'] ?? 0;
     owner = data['owner'] ?? "";
+    size = data['size'] ?? "";
   }
 }
 
@@ -62,11 +65,13 @@ class ItemService {
           print(data);
           List<dynamic> dataDealOptions = data["dealOption"];
           List<dynamic>? images = data["images"];
-          
+
           var newEntry = ItemCardData(
               doc.id,
               data["title"] ?? "",
-              images != null && images.isNotEmpty && images[0] != null ? images[0] : "",
+              images != null && images.isNotEmpty && images[0] != null
+                  ? images[0]
+                  : "",
               data["credits"] ?? 1,
               ItemCondition.values.firstWhere(
                   (element) =>

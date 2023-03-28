@@ -17,6 +17,8 @@ class AddItem extends StatefulWidget {
   State<AddItem> createState() => _AddItemState();
 }
 
+const double SPACING = 10;
+
 class _AddItemState extends State<AddItem> {
   final _formKey = GlobalKey<FormState>();
   final List<String> _secondCategorySelected = <String>[];
@@ -56,6 +58,7 @@ class _AddItemState extends State<AddItem> {
                     color: Color.fromARGB(255, 82, 82, 82),
                   ),
                 ),
+                const SizedBox(height: SPACING),
                 const Text(
                   "Category",
                   textAlign: TextAlign.left,

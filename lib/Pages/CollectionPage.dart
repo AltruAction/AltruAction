@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:recloset/Components/BottomNavigationBar.dart';
 import 'package:recloset/Components/Collection.dart';
 import 'package:recloset/Components/ItemCard.dart';
@@ -53,6 +52,7 @@ class _CollectionPageState extends State<CollectionPage> {
                 crossAxisCount: 2,
                 scrollDirection: Axis.vertical,
                 children: widget.collection
+                    .where((item) => item.name.toLowerCase().contains(widget.searchQuery.toLowerCase()))
                     .map((item) => InkWell(
                         child: ItemCard(
                           imagePath: item.imagePath,

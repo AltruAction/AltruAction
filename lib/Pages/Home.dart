@@ -57,8 +57,7 @@ class _HomeState extends State<Home> {
     var items = await ItemService().getItems();
     setState(() {
       print(items);
-      _items = DummyData.itemCardData;
-      // items?.values.toList() ?? [];
+      _items = items?.values.toList() ?? [];
       _displayedItems = _items;
     });
   }

@@ -4,7 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:recloset/Components/ContactDialog.dart';
 import 'package:recloset/Pages/QrCodeGen.dart';
 import 'package:provider/provider.dart';
+import 'package:recloset/Services/ItemService.dart';
+import 'package:recloset/Types/UserTypes.dart';
 import 'package:recloset/app_state.dart';
+import 'package:recloset/services/UserService.dart';
 import '../Components/ItemBottomNavigationBar.dart';
 import '../utils/utils.dart';
 
@@ -27,20 +30,20 @@ class ViewItem extends StatefulWidget {
 }
 
 class _ViewItemState extends State<ViewItem> {
-  late final String name;
-  late final List<String> imageUrls;
-  late final int credits;
-  late final int likes;
-  late final String condition;
-  late final String target;
-  late final String category;
-  late final String description;
-  late final String location;
-  late final String status;
-  late final String dealOptions;
-  late final String date;
-  late final String owner;
-  late final String email;
+  String name = "";
+  List<String> imageUrls = List.empty();
+  int credits = 0;
+  int likes = 0;
+  String condition = "";
+  String target = "";
+  String category = "";
+  String description = "";
+  String location = "";
+  String status = "";
+  String dealOptions = "";
+  String date = "";
+  String owner = "";
+  String email = "";
 
   @override
   void initState() {
@@ -48,24 +51,32 @@ class _ViewItemState extends State<ViewItem> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    // TODO call api to get details
 
-    name = "White Top";
-    imageUrls = imgList;
-    credits = 1;
-    likes = 3;
-    condition = convertToUserFriendly("LIKE_NEW");
-    target = convertToUserFriendly("MALE");
-    category = convertToUserFriendly("TOPS");
-    description = "This is a regular, human, non-stolen shirt.";
-    location = "Woodlands";
-    status = convertToUserFriendly("OPEN");
-    dealOptions = ["Meet Up", "Delivery"].join(', ');
-    date = "22/02/2023";
-    owner = "12345";
-    // TODO fetch from user database
-    email = "abc@gmail.com";
+    getData();
     super.initState();
+  }
+
+  getData() async {
+    Item item = await ItemService().getItemById(widget.id);
+    UserState? user = await UserService.getUser(item.owner);
+    setState(() {
+      name = item.name;
+      imageUrls = item.imageUrls;
+      credits = item.credits;
+      likes = item.likes;
+      condition = convertToUserFriendly(item.condition);
+      target = convertToUserFriendly(item.target);
+      category = convertToUserFriendly(item.category);
+      description = item.description;
+      location = item.location;
+      status = convertToUserFriendly(item.status);
+      dealOptions = item.dealOptions.join(', ');
+      date = item.date;
+      owner = item.owner;
+
+      // TODO fetch from user database
+      email = user!.email;
+    });
   }
 
   @override
@@ -74,7 +85,7 @@ class _ViewItemState extends State<ViewItem> {
       body: ListView(shrinkWrap: true, children: [
         Container(
             height: MediaQuery.of(context).size.height * 0.3,
-            child: Carousel(imageUrls: imgList)),
+            child: Carousel(imageUrls: imageUrls)),
         Container(
           padding: EdgeInsets.only(left: 10.0),
           child: Text(

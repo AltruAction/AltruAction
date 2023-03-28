@@ -13,25 +13,30 @@ class Item {
   late final String description;
   late final String location;
   late final String status;
-  late final String dealOptions;
+  late final List<String> dealOptions;
   late final String date;
   late final String owner;
 
   Item.fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data()! as Map<String, dynamic>;
-    name = data['name'];
-    imageUrls = List<String>.from(data['imageUrls']);
-    credits = data['credits'];
-    likes = data['likes'];
-    condition = data['condition'];
-    target = data['target'];
-    category = data['category'];
-    description = data['description'];
-    location = data['location'];
-    status = data['status'];
-    dealOptions = data['dealOptions'];
-    date = data['date'];
-    owner = data['owner'];
+    name = data['title'] ?? "";
+
+    imageUrls = data['images'] == null
+        ? List.empty()
+        : List<String>.from(data['images']);
+    credits = data['credits'] ?? 0;
+    likes = data['likes'] == null ? 0 : List<String>.from(data['likes']).length;
+    condition = data['condition'] ?? "";
+    target = data['target'] ?? "";
+    category = data['category'] ?? "";
+    description = data['description'] ?? "";
+    location = data['location'] ?? "";
+    status = data['status'] ?? "";
+    dealOptions = data['dealOption'] == null
+        ? List.empty()
+        : List<String>.from(data['dealOption']);
+    date = data['date'] ?? "";
+    owner = data['owner'] ?? "";
   }
 }
 
@@ -60,7 +65,9 @@ class ItemService {
 
   Future<Item> getItemById(String id) async {
     final doc = await db.collection('items').doc(id).get();
+    // print(doc.data());
     final item = Item.fromSnapshot(doc);
+    print(item);
     return item;
   }
 
@@ -96,6 +103,7 @@ class ItemService {
           result[doc.id] = newEntry;
         }
       });
+      print(result);
       return result;
     } catch (e) {
       print(e);

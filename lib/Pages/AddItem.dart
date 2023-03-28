@@ -69,6 +69,7 @@ class _AddItemState extends State<AddItem> {
                   'Dresses',
                   'Shorts'
                 ]),
+                const SizedBox(height: SPACING),
                 const Text(
                   "Listing Title",
                   textAlign: TextAlign.left,
@@ -86,9 +87,11 @@ class _AddItemState extends State<AddItem> {
                     return null;
                   },
                 ),
+                const SizedBox(height: SPACING),
                 const Text("About the item",
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const SizedBox(height: SPACING),
                 const Text(
                   "Condition",
                   textAlign: TextAlign.left,
@@ -100,6 +103,7 @@ class _AddItemState extends State<AddItem> {
                   'Well used',
                   'Heavily used'
                 ]),
+                const SizedBox(height: SPACING),
                 const Text(
                   "Size",
                   textAlign: TextAlign.left,
@@ -121,6 +125,7 @@ class _AddItemState extends State<AddItem> {
                     );
                   }).toList(),
                 ),
+                const SizedBox(height: SPACING),
                 const Text(
                   "Credits",
                   textAlign: TextAlign.left,
@@ -140,6 +145,7 @@ class _AddItemState extends State<AddItem> {
                     return null;
                   },
                 ),
+                const SizedBox(height: SPACING),
                 const Text(
                   "Description",
                   textAlign: TextAlign.left,
@@ -157,6 +163,7 @@ class _AddItemState extends State<AddItem> {
                     return null;
                   },
                 ),
+                const SizedBox(height: SPACING),
                 const Text(
                   "Target",
                   textAlign: TextAlign.left,
@@ -178,6 +185,7 @@ class _AddItemState extends State<AddItem> {
                     );
                   }).toList(),
                 ),
+                const SizedBox(height: SPACING),
                 const Text(
                   "Deal Method",
                   textAlign: TextAlign.left,
@@ -204,6 +212,7 @@ class _AddItemState extends State<AddItem> {
                     );
                   }).toList(),
                 ),
+                const SizedBox(height: SPACING),
                 const Text(
                   "Location",
                   textAlign: TextAlign.left,
@@ -215,6 +224,7 @@ class _AddItemState extends State<AddItem> {
                     hintText: 'Where do you want to meet up?',
                   ),
                 ),
+                const SizedBox(height: SPACING),
                 ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {

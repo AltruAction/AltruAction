@@ -4,6 +4,10 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+<string>This app requires read and write permission Photo Library</string>
+<key>NSCameraUsageDescription</key>
+<string>This app requires read and write permission from the user.</string>
 	<key>CFBundleDisplayName</key>
 	<string>Recloset</string>
 	<key>CFBundleExecutable</key>

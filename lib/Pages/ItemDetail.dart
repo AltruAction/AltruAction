@@ -63,7 +63,7 @@ class _ViewItemState extends State<ViewItem> {
       name = item.name;
       imageUrls = item.imageUrls;
       credits = item.credits;
-      likes = item.likes;
+      likes = item.likes.length;
       condition = convertToUserFriendly(item.condition);
       target = convertToUserFriendly(item.target);
       category = convertToUserFriendly(item.category);

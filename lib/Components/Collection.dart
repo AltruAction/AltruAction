@@ -3,7 +3,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:recloset/Components/ItemCard.dart';
 import 'package:recloset/Pages/ViewItem.dart';
 import 'package:recloset/Pages/CollectionPage.dart';
-import 'package:recloset/Types/CommonTypes.dart';
+import 'package:recloset/Types/CommonTypes.dart' hide Item;
 
 class ItemCardData {
   // TODO: Change to UUID?

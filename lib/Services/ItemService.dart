@@ -75,9 +75,9 @@ class ItemService {
     try {
       Map<String, ItemCardData> result = Map();
       await db.collection("items").get().then((event) {
-        print(event.docs);
         for (var doc in event.docs) {
           var data = doc.data();
+          print(data);
           List<dynamic> dataDealOptions = data["dealOption"];
           List<dynamic>? images = data["images"];
 

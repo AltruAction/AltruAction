@@ -83,28 +83,6 @@ class _AddItemState extends State<AddItem> {
                     return null;
                   },
                 ),
-                Wrap(
-                  spacing: 5.0,
-                  children: tags.map((String tag) {
-                    return FilterChip(
-                      label: Text(tag),
-                      selected: _secondCategorySelected.contains(tag),
-                      onSelected: (bool value) {
-                        setState(() {
-                          if (value) {
-                            if (!_secondCategorySelected.contains(tag)) {
-                              _secondCategorySelected.add(tag);
-                            }
-                          } else {
-                            _secondCategorySelected.removeWhere((String name) {
-                              return name == tag;
-                            });
-                          }
-                        });
-                      },
-                    );
-                  }).toList(),
-                ),
                 const Text("About the item",
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
@@ -177,7 +155,7 @@ class _AddItemState extends State<AddItem> {
                   },
                 ),
                 const Text(
-                  "Deal Method",
+                  "Target",
                   textAlign: TextAlign.left,
                 ),
                 Wrap(
@@ -244,7 +222,6 @@ class _AddItemState extends State<AddItem> {
                           "status": "OPEN",
                           "category": listing.category,
                           "condition": listing.condition,
-                          "secondCategory": _secondCategorySelected,
                           "dealOption": _dealOptionSelected,
                           "description": descriptionController.text,
                           "images":
@@ -255,6 +232,7 @@ class _AddItemState extends State<AddItem> {
                           "location": locationController.text,
                           "owner": FirebaseAuth.instance.currentUser!.uid,
                           "timestamp": DateTime.now().millisecondsSinceEpoch,
+                          "target": _target,
                         };
                         db.collection("items").doc().set(item).onError(
                             (e, _) => print("Error writing document: $e"));

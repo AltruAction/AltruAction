@@ -4,10 +4,13 @@ import 'package:provider/provider.dart';
 import '../Data/ListingProvider.dart';
 
 const List<String> categoryList = <String>[
-  'TShirts & Polo Shirts',
-  'Pants',
-  'Dresses',
-  'Shorts'
+  "Accessories",
+  "Activewear",
+  "Bottoms",
+  "Dresses",
+  "Others",
+  "Outerwear",
+  "Tops",
 ];
 
 class ChooseCategory extends StatefulWidget {

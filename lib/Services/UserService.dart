@@ -11,7 +11,7 @@ class UserService {
       "uuid": user.UUID,
       "credits": user.credits,
       "listedItems": user.listedItems,
-      "likedItems": user.likedItems,
+      "likes": user.likes,
       "transactions": user.transactions,
     };
   }
@@ -23,9 +23,9 @@ class UserService {
     return UserState(
         data?['uuid'] ?? '',
         data?['credits'] ?? 0,
-        (data?['listedItems'] as List).map((item) => item as int).toList(),
-        (data?['likedItems'] as List).map((item) => item as int).toList(),
-        (data?['likedItems'] as List)
+        (data?['listedItems'] as List).map((item) => item as String).toList(),
+        (data?['likes'] as List).map((item) => item as String).toList(),
+        (data?['transactions'] as List)
             .map((item) => item as Transaction)
             .toList());
   }

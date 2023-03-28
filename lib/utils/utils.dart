@@ -12,7 +12,7 @@ String convertToUserFriendly(String word) {
 // TODO shift to more secure location for production
 String secretKey = "MarcusTaufiqCedricKevin";
 String splitToken = "||";
-String startToken = "reCloset-";
+String startToken = "reCloset";
 
 String generateAndSignMessage(String id) {
   String message = "$startToken-$id-${DateTime.now().millisecondsSinceEpoch}";

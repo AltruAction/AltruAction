@@ -53,7 +53,7 @@ class _QRCodeGenState extends State<QRCodeGen> {
                 Container(
                   width: 200,
                   child: Text(
-                    '$widget.name',
+                    '${widget.name}',
                     softWrap: true,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,

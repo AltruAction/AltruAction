@@ -24,6 +24,7 @@ class TransactionService {
       final itemData = itemSnapshot.data()! as Map<String, dynamic>;
       int itemCredits = itemData["credits"] ?? 0;
       String status = itemData['status'] ?? "";
+
       if (status == "GIVEN") {
         throw 'Item has already been given';
       }
@@ -50,7 +51,6 @@ class TransactionService {
 
       // Subtract the item credits from the receiver and add them to the giver
       final int giverCredits = giverData['credits'] ?? 0;
-
       transaction.update(_usersCollection.doc(giverId),
           {'credits': giverCredits + itemCredits});
       transaction.update(_usersCollection.doc(receiverId),

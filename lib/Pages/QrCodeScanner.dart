@@ -135,9 +135,12 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
         _showInvalidQRCodePopup(controller);
       } else {
         String itemId = getMessage(scanData.code!).split("-")[1];
+        print(scanData.code);
+        print("getMEssage: ${getMessage(scanData.code!)}");
+        print("itemId:: $itemId");
         Item item = await ItemService().getItemById(itemId);
-        String userId =
-            Provider.of<ApplicationState>(context, listen: false).user!.uid;
+        String userId = "kPGQD7QuzSvOFelAWpSc";
+        // Provider.of<ApplicationState>(context, listen: false).user!.uid;
         try {
           await TransactionService()
               .createTransaction(item.owner, userId, itemId);

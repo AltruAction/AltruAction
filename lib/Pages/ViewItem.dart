@@ -57,7 +57,6 @@ class _ViewItemState extends State<ViewItem> {
   }
 
   getData() async {
-    final provider = Provider.of<ApplicationState>(context, listen: false);
     Item item = await ItemService().getItemById(widget.id);
     UserState? user = await UserService.getUser(item.owner);
     setState(() {
@@ -74,8 +73,7 @@ class _ViewItemState extends State<ViewItem> {
       dealOptions = item.dealOptions.join(', ');
       date = item.date;
       owner = item.owner;
-
-      email = provider.user?.email ?? "";
+      email = user?.email ?? "";
     });
   }
 

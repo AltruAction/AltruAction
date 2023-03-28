@@ -6,10 +6,9 @@ class UserState {
   List<int> listedItems;
   List<int> likedItems;
   List<Transaction> transactions;
-  String email;
 
   UserState(this.UUID, this.credits, this.listedItems, this.likedItems,
-      this.transactions, this.email);
+      this.transactions);
 
   map(int Function(dynamic item) param0) {}
 }

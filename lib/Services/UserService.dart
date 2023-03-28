@@ -12,7 +12,6 @@ class UserService {
       "listedItems": user.listedItems,
       "likedItems": user.likedItems,
       "transactions": user.transactions,
-      "email": user.email
     };
   }
 
@@ -27,14 +26,12 @@ class UserService {
         (data?['likedItems'] as List).map((item) => item as int).toList(),
         (data?['likedItems'] as List)
             .map((item) => item as Transaction)
-            .toList(),
-        data?['email'] ?? '');
+            .toList());
   }
 
   static Future<UserState?> createNewUser(String uuid) async {
-    // TODO get their email from Google
     UserState? newUser =
-        UserState(uuid, 0, [], [], [], "email@placeholder.com");
+        UserState(uuid, 0, [], [], []);
     final user = toFirestore(newUser);
 
     await userDb

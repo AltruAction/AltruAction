@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import '../Types/CommonTypes.dart';
 import '../Data/ListingProvider.dart';
 
-const List<String> categoryList = <String>[
-  "Accessories",
-  "Activewear",
-  "Bottoms",
-  "Dresses",
-  "Others",
-  "Outerwear",
-  "Tops",
-];
+List<String> categoryList =
+    ItemCategory.values.map((e) => e.displayName).toList();
 
 class ChooseCategory extends StatefulWidget {
   final List<String> items;
@@ -46,8 +39,7 @@ class _ChooseCategoryState extends State<ChooseCategory> {
                   value;
             });
           },
-          items:
-              this.widget.items.map<DropdownMenuItem<String>>((String value) {
+          items: categoryList.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
               child: Text(value),

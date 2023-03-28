@@ -11,29 +11,36 @@ class UserService {
       "credits": user.credits,
       "listedItems": user.listedItems,
       "likedItems": user.likedItems,
-      "transactions": user.transactions
+      "transactions": user.transactions,
+      "email": user.email
     };
   }
 
-  static UserState fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  static UserState fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data();
-    
+
     return UserState(
-        data?['uuid'] ?? '', 
+        data?['uuid'] ?? '',
         data?['credits'] ?? 0,
         (data?['listedItems'] as List).map((item) => item as int).toList(),
         (data?['likedItems'] as List).map((item) => item as int).toList(),
-        (data?['likedItems'] as List).map((item) => item as Transaction).toList()
-    );
+        (data?['likedItems'] as List)
+            .map((item) => item as Transaction)
+            .toList(),
+        data?['email'] ?? '');
   }
 
   static Future<UserState?> createNewUser(String uuid) async {
-    UserState? newUser = UserState(uuid, 0, [], [], []);
+    // TODO get their email from Google
+    UserState? newUser =
+        UserState(uuid, 0, [], [], [], "email@placeholder.com");
     final user = toFirestore(newUser);
 
-    await userDb.doc(uuid).set(user).onError((error, stackTrace) => {
-      newUser = null
-    });
+    await userDb
+        .doc(uuid)
+        .set(user)
+        .onError((error, stackTrace) => {newUser = null});
 
     return newUser;
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recloset/Components/ItemCard.dart';
-import 'package:recloset/Pages/ItemDetail.dart';
+import 'package:recloset/Pages/ViewItem.dart';
 import 'package:recloset/Pages/CollectionPage.dart';
 import 'package:recloset/Types/CommonTypes.dart';
 
@@ -39,34 +39,36 @@ class _CollectionState extends State<Collection> {
     return Container(
         padding: const EdgeInsets.all(10),
         child: Column(children: [
-          if (widget.showTitle) ...[Row(
-            children: [
-              Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    widget.title,
-                    style: const TextStyle(fontSize: 30),
-                  )),
-              const Spacer(),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => CollectionPage(
-                          collection: widget.items,
-                          title: widget.title,
+          if (widget.showTitle) ...[
+            Row(
+              children: [
+                Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      widget.title,
+                      style: const TextStyle(fontSize: 30),
+                    )),
+                const Spacer(),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => CollectionPage(
+                            collection: widget.items,
+                            title: widget.title,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    "More",
-                    style: TextStyle(
-                        color: Colors.green,
-                        decoration: TextDecoration.underline),
-                  ))
-            ],
-          )],
+                      );
+                    },
+                    child: const Text(
+                      "More",
+                      style: TextStyle(
+                          color: Colors.green,
+                          decoration: TextDecoration.underline),
+                    ))
+              ],
+            )
+          ],
           SizedBox(
               height: 200,
               child: ListView(
@@ -80,7 +82,7 @@ class _CollectionState extends State<Collection> {
                         ),
                         onTap: () =>
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ItemDetail(id: item.id),
+                              builder: (context) => ViewItem(id: item.id),
                             ))))
                     .toList(),
               ))

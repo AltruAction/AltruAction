@@ -56,7 +56,6 @@ class _HomeState extends State<Home> {
   void getData() async {
     var items = await ItemService().getItems();
     setState(() {
-      print(items);
       _items = items?.values.toList() ?? [];
       _displayedItems = _items;
     });

@@ -117,8 +117,8 @@ class _ProfilePageState extends State<Profile>
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    const Center(child: ProfilePageItemList()),
-                    const Center(child: ProfilePageItemList()),
+                    Center(child: ProfilePageItemList(ids: appState.userState?.listedItems ?? [])),
+                    Center(child: ProfilePageItemList(ids: appState.userState?.likes ?? [])),
                     Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: const [

@@ -4,15 +4,15 @@ import 'package:recloset/Types/UserTypes.dart';
 
 class UserService {
   static var userDb = FirebaseFirestore.instance.collection("users");
+  static var itemDb = FirebaseFirestore.instance.collection("items");
 
   static Map<String, dynamic> toFirestore(UserState user) {
     return {
       "uuid": user.UUID,
       "credits": user.credits,
       "listedItems": user.listedItems,
-      "likedItems": user.likedItems,
+      "likes": user.likes,
       "transactions": user.transactions,
-      "email": user.email
     };
   }
 
@@ -23,20 +23,17 @@ class UserService {
     return UserState(
         data?['uuid'] ?? '',
         data?['credits'] ?? 0,
-        (data?['listedItems'] as List).map((item) => item as int).toList(),
-        (data?['likedItems'] as List).map((item) => item as int).toList(),
-        (data?['likedItems'] as List)
+        (data?['listedItems'] as List).map((item) => item as String).toList(),
+        (data?['likes'] as List).map((item) => item as String).toList(),
+        (data?['transactions'] as List)
             .map((item) => item as Transaction)
-            .toList(),
-        data?['email'] ?? '');
+            .toList());
   }
 
   static Future<UserState?> createNewUser(String uuid) async {
-    // TODO get their email from Google
     UserState? newUser =
-        UserState(uuid, 0, [], [], [], "email@placeholder.com");
+        UserState(uuid, 0, [], [], []);
     final user = toFirestore(newUser);
-
     await userDb
         .doc(uuid)
         .set(user)
@@ -58,5 +55,22 @@ class UserService {
       print(e);
       return null;
     }
+  }
+
+  static Future<void> updateLikeItem(String uuid, String itemId, bool isLike) async {
+    List<Future> futures;
+    if (isLike) {
+      futures = [
+        userDb.doc(uuid).update({ "likes": FieldValue.arrayUnion([itemId])}),
+        itemDb.doc(itemId).update({ "likes": FieldValue.arrayUnion([uuid])})
+      ];
+    } else {
+      futures = [
+        userDb.doc(uuid).update({ "likes": FieldValue.arrayRemove([itemId])}),
+        itemDb.doc(itemId).update({ "likes": FieldValue.arrayRemove([uuid])})
+      ];
+    }
+
+    await Future.wait(futures);
   }
 }

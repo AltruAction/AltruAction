@@ -16,24 +16,21 @@ class Carousel extends StatefulWidget {
 class _CarouselState extends State<Carousel> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
-  late List<Widget> imageSliders;
 
-  @override
-  void initState() {
-    imageSliders = widget.imageUrls
-        .map((item) => Container(
-              child: Container(
-                margin: EdgeInsets.all(5.0),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    child: Stack(
-                      children: <Widget>[
-                        Image.network(item, fit: BoxFit.cover, width: 1000.0),
-                      ],
-                    )),
-              ),
-            ))
-        .toList();
+  Image _getImage(String imagePath) {
+    Image defaultImage = Image.asset("assets/placeholder.png");
+    Image image = defaultImage;
+    if (imagePath != "") {
+      try {
+        image = Image(image: NetworkImage(imagePath));
+        return image;
+      } catch (e) {
+        print(e);
+        return defaultImage;
+      }
+    } else {
+      return defaultImage;
+    }
   }
 
   @override
@@ -42,7 +39,22 @@ class _CarouselState extends State<Carousel> {
       body: Column(children: [
         Expanded(
           child: CarouselSlider(
-            items: imageSliders,
+            items: widget.imageUrls
+                .map((item) => Container(
+                      child: Container(
+                        margin: EdgeInsets.all(5.0),
+                        child: ClipRRect(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
+                            child: Stack(
+                              children: <Widget>[
+                                Image.network(item,
+                                    fit: BoxFit.cover, width: 1000.0),
+                              ],
+                            )),
+                      ),
+                    ))
+                .toList(),
             carouselController: _controller,
             options: CarouselOptions(
                 autoPlay: true,

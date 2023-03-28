@@ -134,16 +134,19 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
       if (!isValid) {
         _showInvalidQRCodePopup(controller);
       } else {
-        String id = getMessage(scanData.code!).split("-")[1];
-
-        Item item = await ItemService().getItemById(id);
-        if (item == null || item.status == "GIVEN") {
-          _showInvalidItemPopup(controller);
-          return;
-        }
+        String itemId = getMessage(scanData.code!).split("-")[1];
+        Item item = await ItemService().getItemById(itemId);
         String userId =
             Provider.of<ApplicationState>(context, listen: false).user!.uid;
-        TransactionService().createTransaction(item.owner, id, userId);
+        try {
+          await TransactionService()
+              .createTransaction(item.owner, userId, itemId);
+        } catch (e) {
+          // Handle the error
+          print('Transaction failed: $e');
+          _showErrorPopup(controller, e.toString());
+          return;
+        }
         _navigateToSuccessPage(item.name);
       }
     });
@@ -158,13 +161,13 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
     }
   }
 
-  void _showInvalidItemPopup(QRViewController controller) {
+  void _showErrorPopup(QRViewController controller, String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Invalid Item'),
-          content: Text('Item has already been given or does not exist'),
+          title: Text('Error'),
+          content: Text('$message'),
           actions: [
             TextButton(
               onPressed: () {

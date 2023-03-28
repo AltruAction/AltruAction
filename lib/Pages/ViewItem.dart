@@ -233,6 +233,7 @@ class _ViewItemState extends State<ViewItem> {
                 QRCodeGen(key: Key(widget.id), id: widget.id, name: name),
           ));
         },
+        isGiven: status == "Given",
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

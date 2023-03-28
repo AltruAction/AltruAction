@@ -136,11 +136,9 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
       } else {
         String itemId = getMessage(scanData.code!).split("-")[1];
         print(scanData.code);
-        print("getMEssage: ${getMessage(scanData.code!)}");
-        print("itemId:: $itemId");
         Item item = await ItemService().getItemById(itemId);
-        String userId = "kPGQD7QuzSvOFelAWpSc";
-        // Provider.of<ApplicationState>(context, listen: false).user!.uid;
+        String userId =
+            Provider.of<ApplicationState>(context, listen: false).user!.uid;
         try {
           await TransactionService()
               .createTransaction(item.owner, userId, itemId);
@@ -150,7 +148,7 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
           _showErrorPopup(controller, e.toString());
           return;
         }
-        _navigateToSuccessPage(item.name);
+        _navigateToSuccessPage(item);
       }
     });
   }
@@ -206,10 +204,10 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
     );
   }
 
-  void _navigateToSuccessPage(name) {
+  void _navigateToSuccessPage(item) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SuccessPage(name: name)),
+      MaterialPageRoute(builder: (context) => SuccessPage(item: item)),
     );
   }
 

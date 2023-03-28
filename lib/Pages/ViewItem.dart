@@ -41,9 +41,10 @@ class _ViewItemState extends State<ViewItem> {
   String location = "";
   String status = "";
   String dealOptions = "";
-  String date = "";
+  DateTime date = DateTime.now();
   String owner = "";
   String email = "";
+  String size = "";
 
   @override
   void initState() {
@@ -71,9 +72,10 @@ class _ViewItemState extends State<ViewItem> {
       location = item.location;
       status = convertToUserFriendly(item.status);
       dealOptions = item.dealOptions.join(', ');
-      date = item.date;
+      date = DateTime.fromMillisecondsSinceEpoch(item.date);
       owner = item.owner;
       email = user?.email ?? "";
+      size = item.size;
     });
   }
 
@@ -106,7 +108,7 @@ class _ViewItemState extends State<ViewItem> {
                       color: Colors.grey,
                     ),
                     SizedBox(width: 10),
-                    Text('Posted on $date'),
+                    Text('Posted on ${date.day}/${date.month}/${date.year}'),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -179,6 +181,17 @@ class _ViewItemState extends State<ViewItem> {
                 Row(
                   children: [
                     Icon(
+                      Icons.straighten,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(width: 10),
+                    Text('$size'),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(
                       Icons.location_on,
                       color: Colors.grey,
                     ),
@@ -205,35 +218,47 @@ class _ViewItemState extends State<ViewItem> {
                       color: Colors.grey,
                     ),
                     SizedBox(width: 10),
-                    Text('$description'),
+                    Flexible(
+                      child: Text(
+                        '$description',
+                        maxLines: 100,
+                        overflow: TextOverflow
+                            .ellipsis, // Change to the type of overflow you want
+                      ),
+                    ),
                   ],
                 ),
               ],
             )),
       ]),
-      bottomNavigationBar: Consumer<ApplicationState>(builder: (context, appState, _) {
+      bottomNavigationBar:
+          Consumer<ApplicationState>(builder: (context, appState, _) {
         String? uid = appState.user?.uid;
         return ItemBottomNavigationBar(
           isOwner: isOwner(uid),
           liked: likes.contains(uid),
           likes: likes.length,
           onLikePressed: () => {
-            if (likes.contains(uid) && uid != null) {
-              likes.remove(uid),
-              setState(() {
-                likes;
-              }),
-              UserService.updateLikeItem(uid, widget.id, false)
-            } else if (uid != null) {
-              likes.add(uid),
-              setState(() {
-                likes;
-              }),
-              UserService.updateLikeItem(uid, widget.id, true),
-
-            } else {
-              // todo: show popup to login to like
-            }
+            if (likes.contains(uid) && uid != null)
+              {
+                likes.remove(uid),
+                setState(() {
+                  likes;
+                }),
+                UserService.updateLikeItem(uid, widget.id, false)
+              }
+            else if (uid != null)
+              {
+                likes.add(uid),
+                setState(() {
+                  likes;
+                }),
+                UserService.updateLikeItem(uid, widget.id, true),
+              }
+            else
+              {
+                // todo: show popup to login to like
+              }
           },
           onShowContactInfoPressed: () {
             showDialog(

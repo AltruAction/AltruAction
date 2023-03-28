@@ -38,18 +38,18 @@ class Login extends StatelessWidget {
 
   handleSignIn(UserCredential credential, BuildContext context) async {
     final navigator = Navigator.of(context);
-    await getOrCreateUser(credential.user!.uid, context);
+    await getOrCreateUser(credential.user!.uid, credential.user!.email!, context);
     navigator.pop();
   }
 
-  getOrCreateUser(String uuid, BuildContext context) async {
+  getOrCreateUser(String uuid, String email, BuildContext context) async {
     final provider = Provider.of<ApplicationState>(context, listen: false);
 
     UserState? user;
 
     user = await UserService.getUser(uuid);
 
-    user ??= await UserService.createNewUser(uuid);
+    user ??= await UserService.createNewUser(uuid, email);
 
     provider.updateUserState(user);
   }

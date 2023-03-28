@@ -6,9 +6,10 @@ class UserState {
   List<String> listedItems;
   List<String> likes;
   List<Transaction> transactions;
+  String email;
 
   UserState(this.UUID, this.credits, this.listedItems, this.likes,
-      this.transactions);
+      this.transactions, this.email);
 
   UserState copyWith({
     String? UUID,
@@ -16,11 +17,13 @@ class UserState {
     List<String>? listedItems,
     List<String>? likes,
     List<Transaction>? transactions,
+    String? email,
   }) {
     return UserState(UUID ?? this.UUID, 
                       credits ?? this.credits, 
                       listedItems ?? this.listedItems,
                       likes ?? this.likes,
-                      transactions ?? this.transactions);
+                      transactions ?? this.transactions,
+                      email ?? this.email);
   }
 }

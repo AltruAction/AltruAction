@@ -13,6 +13,7 @@ class UserService {
       "listedItems": user.listedItems,
       "likes": user.likes,
       "transactions": user.transactions,
+      "email": user.email,
     };
   }
 
@@ -27,12 +28,13 @@ class UserService {
         (data?['likes'] as List).map((item) => item as String).toList(),
         (data?['transactions'] as List)
             .map((item) => item as Transaction)
-            .toList());
+            .toList(),
+        data?['email'] ?? '',);
   }
 
-  static Future<UserState?> createNewUser(String uuid) async {
+  static Future<UserState?> createNewUser(String uuid, String email) async {
     UserState? newUser =
-        UserState(uuid, 0, [], [], []);
+        UserState(uuid, 0, [], [], [], email);
     final user = toFirestore(newUser);
     await userDb
         .doc(uuid)

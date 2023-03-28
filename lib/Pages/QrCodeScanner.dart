@@ -2,8 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:recloset/Services/ItemService.dart';
+import 'package:recloset/Services/TransactionService.dart';
+import 'package:recloset/app_state.dart';
 
+import '../utils/utils.dart';
 import 'SuccessPage.dart';
 
 class QrCodeScanner extends StatefulWidget {
@@ -118,18 +123,32 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
     setState(() {
       this.controller = controller;
     });
-    controller.scannedDataStream.listen((scanData) {
+    controller.scannedDataStream.listen((scanData) async {
       setState(() {
         result = scanData;
       });
+      bool isValid =
+          isValidStartToken(scanData.code) && verifySignature(scanData.code);
 
-      const isValid = true;
-      const itemName = "White Top";
       controller!.pauseCamera();
       if (!isValid) {
         _showInvalidQRCodePopup(controller);
       } else {
-        _navigateToSuccessPage(itemName);
+        String itemId = getMessage(scanData.code!).split("-")[1];
+        print(scanData.code);
+        Item item = await ItemService().getItemById(itemId);
+        String userId =
+            Provider.of<ApplicationState>(context, listen: false).user!.uid;
+        try {
+          await TransactionService()
+              .createTransaction(item.owner, userId, itemId);
+        } catch (e) {
+          // Handle the error
+          print('Transaction failed: $e');
+          _showErrorPopup(controller, e.toString());
+          return;
+        }
+        _navigateToSuccessPage(item);
       }
     });
   }
@@ -141,6 +160,27 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
         const SnackBar(content: Text('no Permission')),
       );
     }
+  }
+
+  void _showErrorPopup(QRViewController controller, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text('$message'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                controller!.resumeCamera();
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showInvalidQRCodePopup(QRViewController controller) {
@@ -164,10 +204,10 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
     );
   }
 
-  void _navigateToSuccessPage(name) {
+  void _navigateToSuccessPage(item) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SuccessPage(name: name)),
+      MaterialPageRoute(builder: (context) => SuccessPage(item: item)),
     );
   }
 

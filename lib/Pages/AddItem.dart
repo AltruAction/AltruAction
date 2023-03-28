@@ -21,6 +21,7 @@ class _AddItemState extends State<AddItem> {
   final _formKey = GlobalKey<FormState>();
   final List<String> _secondCategorySelected = <String>[];
   String _clothesSize = "s";
+  String _target = "Male";
   final List<String> _dealOptionSelected = <String>[];
   List<String> tags = [
     "Tops",
@@ -181,6 +182,27 @@ class _AddItemState extends State<AddItem> {
                 ),
                 Wrap(
                   spacing: 5.0,
+                  children:
+                      ["Male", "Female", "Unisex"].map((String selectedSize) {
+                    return FilterChip(
+                      label: Text(selectedSize),
+                      selected: _target == selectedSize,
+                      onSelected: (bool value) {
+                        setState(() {
+                          if (value) {
+                            _target = selectedSize;
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+                const Text(
+                  "Deal Method",
+                  textAlign: TextAlign.left,
+                ),
+                Wrap(
+                  spacing: 5.0,
                   children: ["Meet up", "Delivery"].map((String tag) {
                     return FilterChip(
                       label: Text(tag),
@@ -219,6 +241,7 @@ class _AddItemState extends State<AddItem> {
                         var listing = Provider.of<ListingProvider>(context,
                             listen: false);
                         final item = {
+                          "status": "OPEN",
                           "category": listing.category,
                           "condition": listing.condition,
                           "secondCategory": _secondCategorySelected,
@@ -230,7 +253,7 @@ class _AddItemState extends State<AddItem> {
                           "credits": int.tryParse(creditsController.text) ?? 0,
                           "size": _clothesSize,
                           "location": locationController.text,
-                          // "owner": FirebaseAuth.instance.currentUser!.uid,
+                          "owner": FirebaseAuth.instance.currentUser!.uid,
                           "timestamp": DateTime.now().millisecondsSinceEpoch,
                         };
                         db.collection("items").doc().set(item).onError(

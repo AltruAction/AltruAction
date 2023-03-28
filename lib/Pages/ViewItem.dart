@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:recloset/Components/Carousel.dart';
 import 'package:flutter/services.dart';
-
+import 'package:recloset/Components/ContactDialog.dart';
+import 'package:recloset/Pages/QrCodeGen.dart';
+import 'package:provider/provider.dart';
+import 'package:recloset/Services/ItemService.dart';
+import 'package:recloset/Types/UserTypes.dart';
+import 'package:recloset/app_state.dart';
+import 'package:recloset/services/UserService.dart';
 import '../Components/ItemBottomNavigationBar.dart';
 import '../utils/utils.dart';
 
@@ -14,28 +20,30 @@ final List<String> imgList = [
   'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
 ];
 
-class Item extends StatefulWidget {
-  final int id;
+class ViewItem extends StatefulWidget {
+  final String id;
 
-  const Item({Key? key, required this.id});
+  const ViewItem({Key? key, required this.id});
 
   @override
-  State<StatefulWidget> createState() => _ItemState();
+  State<StatefulWidget> createState() => _ViewItemState();
 }
 
-class _ItemState extends State<Item> {
-  late final String name;
-  late final List<String> imageUrls;
-  late final int credits;
-  late final int likes;
-  late final String condition;
-  late final String target;
-  late final String category;
-  late final String description;
-  late final String location;
-  late final String status;
-  late final String dealOptions;
-  late final String date;
+class _ViewItemState extends State<ViewItem> {
+  String name = "";
+  List<String> imageUrls = List.empty();
+  int credits = 0;
+  List<String> likes = [];
+  String condition = "";
+  String target = "";
+  String category = "";
+  String description = "";
+  String location = "";
+  String status = "";
+  String dealOptions = "";
+  String date = "";
+  String owner = "";
+  String email = "";
 
   @override
   void initState() {
@@ -43,20 +51,30 @@ class _ItemState extends State<Item> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    // TODO call api to get details
-    name = "White Top";
-    imageUrls = imgList;
-    credits = 1;
-    likes = 3;
-    condition = convertToUserFriendly("LIKE_NEW");
-    target = convertToUserFriendly("MALE");
-    category = convertToUserFriendly("TOPS");
-    description = "This is a regular, human, non-stolen shirt.";
-    location = "Woodlands";
-    status = convertToUserFriendly("OPEN");
-    dealOptions = ["Meet Up", "Delivery"].join(', ');
-    date = "22/02/2023";
+
+    getData();
     super.initState();
+  }
+
+  getData() async {
+    Item item = await ItemService().getItemById(widget.id);
+    UserState? user = await UserService.getUser(item.owner);
+    setState(() {
+      name = item.name;
+      imageUrls = item.imageUrls;
+      credits = item.credits;
+      likes = item.likes;
+      condition = convertToUserFriendly(item.condition);
+      target = convertToUserFriendly(item.target);
+      category = convertToUserFriendly(item.category);
+      description = item.description;
+      location = item.location;
+      status = convertToUserFriendly(item.status);
+      dealOptions = item.dealOptions.join(', ');
+      date = item.date;
+      owner = item.owner;
+      email = user?.email ?? "";
+    });
   }
 
   @override
@@ -65,7 +83,7 @@ class _ItemState extends State<Item> {
       body: ListView(shrinkWrap: true, children: [
         Container(
             height: MediaQuery.of(context).size.height * 0.3,
-            child: Carousel(imageUrls: imgList)),
+            child: Carousel(imageUrls: imageUrls)),
         Container(
           padding: EdgeInsets.only(left: 10.0),
           child: Text(
@@ -106,11 +124,11 @@ class _ItemState extends State<Item> {
                 Row(
                   children: [
                     Icon(
-                      Icons.thumb_up,
+                      Icons.favorite,
                       color: Colors.grey,
                     ),
                     SizedBox(width: 10),
-                    Text('$likes'),
+                    Text(likes.length.toString()),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -172,7 +190,7 @@ class _ItemState extends State<Item> {
                 Row(
                   children: [
                     Icon(
-                      Icons.local_offer,
+                      Icons.handshake,
                       color: Colors.grey,
                     ),
                     SizedBox(width: 10),
@@ -193,14 +211,48 @@ class _ItemState extends State<Item> {
               ],
             )),
       ]),
-      bottomNavigationBar: ItemBottomNavigationBar(
-          isOwner: true,
-          liked: true,
-          likes: likes,
-          onLikePressed: () => {},
-          onShowContactInfoPressed: () => {},
+      bottomNavigationBar: Consumer<ApplicationState>(builder: (context, appState, _) {
+        String? uid = appState.user?.uid;
+        return ItemBottomNavigationBar(
+          isOwner: isOwner(uid),
+          liked: likes.contains(uid),
+          likes: likes.length,
+          onLikePressed: () => {
+            if (likes.contains(uid) && uid != null) {
+              likes.remove(uid),
+              setState(() {
+                likes;
+              }),
+              UserService.updateLikeItem(uid, widget.id, false)
+            } else if (uid != null) {
+              likes.add(uid),
+              setState(() {
+                likes;
+              }),
+              UserService.updateLikeItem(uid, widget.id, true),
+
+            } else {
+              // todo: show popup to login to like
+            }
+          },
+          onShowContactInfoPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return ContactDialog(email: email);
+              },
+            );
+          },
           onEditPressed: () => {},
-          onGenerateQRCodePressed: () => {}),
+          onGenerateQRCodePressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) =>
+                  QRCodeGen(key: Key(widget.id), id: widget.id, name: name),
+            ));
+          },
+          isGiven: status == "Given",
+        );
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pop();
@@ -209,6 +261,13 @@ class _ItemState extends State<Item> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
+  }
+
+  isOwner(String? uuid) {
+    if (uuid != null) {
+      return uuid == owner;
+    }
+    return false;
   }
 
   @override

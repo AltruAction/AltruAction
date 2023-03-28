@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:recloset/Components/BottomNavigationBar.dart';
 import 'package:recloset/Components/Collection.dart';
 import 'package:recloset/Components/ItemCard.dart';
 
-import 'Item.dart';
+import 'ViewItem.dart';
 
 class CollectionPage extends StatefulWidget {
   final String title;
@@ -53,6 +52,7 @@ class _CollectionPageState extends State<CollectionPage> {
                 crossAxisCount: 2,
                 scrollDirection: Axis.vertical,
                 children: widget.collection
+                    .where((item) => item.name.toLowerCase().contains(widget.searchQuery.toLowerCase()))
                     .map((item) => InkWell(
                         child: ItemCard(
                           imagePath: item.imagePath,
@@ -61,7 +61,7 @@ class _CollectionPageState extends State<CollectionPage> {
                         ),
                         onTap: () =>
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => Item(id: item.id),
+                              builder: (context) => ViewItem(id: item.id),
                             ))))
                     .toList())
           ],

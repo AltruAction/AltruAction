@@ -3,11 +3,27 @@ import 'package:recloset/Types/CommonTypes.dart';
 class UserState {
   String UUID;
   int credits;
-  List<int> listedItems;
-  List<int> likedItems;
+  List<String> listedItems;
+  List<String> likes;
   List<Transaction> transactions;
+  String email;
 
-  UserState(this.UUID, this.credits, this.listedItems, this.likedItems, this.transactions);
+  UserState(this.UUID, this.credits, this.listedItems, this.likes,
+      this.transactions, this.email);
 
-  map(int Function(dynamic item) param0) {}
+  UserState copyWith({
+    String? UUID,
+    int? credits,
+    List<String>? listedItems,
+    List<String>? likes,
+    List<Transaction>? transactions,
+    String? email,
+  }) {
+    return UserState(UUID ?? this.UUID, 
+                      credits ?? this.credits, 
+                      listedItems ?? this.listedItems,
+                      likes ?? this.likes,
+                      transactions ?? this.transactions,
+                      email ?? this.email);
+  }
 }

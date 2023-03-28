@@ -3,8 +3,8 @@ import 'package:recloset/Components/Category.dart';
 import 'package:recloset/Data/Data.dart';
 import 'package:recloset/Pages/CollectionPage.dart';
 import 'package:recloset/Pages/Home.dart';
+import 'package:recloset/Services/ItemService.dart';
 
-import '../DatabaseService.dart';
 import '../Types/CommonTypes.dart';
 import 'Collection.dart';
 
@@ -29,7 +29,7 @@ class _CategoriesState extends State<Categories> {
   }
 
   void getData() async {
-    var items = await DatabaseService().getItems();
+    var items = await ItemService().getItems();
     setState(() {
       _items = items?.values.toList() ?? [];
     });

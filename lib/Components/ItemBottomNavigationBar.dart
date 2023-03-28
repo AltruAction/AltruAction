@@ -8,16 +8,17 @@ class ItemBottomNavigationBar extends StatelessWidget {
   final VoidCallback onShowContactInfoPressed;
   final VoidCallback onEditPressed;
   final VoidCallback onGenerateQRCodePressed;
+  final bool isGiven;
 
-  ItemBottomNavigationBar({
-    required this.isOwner,
-    required this.liked,
-    required this.likes,
-    required this.onLikePressed,
-    required this.onShowContactInfoPressed,
-    required this.onEditPressed,
-    required this.onGenerateQRCodePressed,
-  });
+  ItemBottomNavigationBar(
+      {required this.isOwner,
+      required this.liked,
+      required this.likes,
+      required this.onLikePressed,
+      required this.onShowContactInfoPressed,
+      required this.onEditPressed,
+      required this.onGenerateQRCodePressed,
+      required this.isGiven});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,11 @@ class ItemBottomNavigationBar extends StatelessWidget {
               ],
             ),
           ElevatedButton(
-            onPressed: onShowContactInfoPressed,
+            onPressed: isGiven
+                ? null
+                : isOwner
+                    ? onGenerateQRCodePressed
+                    : onShowContactInfoPressed,
             child: Text(isOwner ? 'Generate QR Code' : 'Show Contact Info'),
           ),
         ],

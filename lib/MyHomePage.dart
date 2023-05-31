@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:recloset/Components/BottomNavigationBar.dart';
 import 'package:recloset/Pages/QrCodeScanner.dart';
+import 'package:recloset/Pages/ChatRoom.dart';
 
 import './Pages/Profile.dart';
 import './Pages/Home.dart';
 import './Pages/AddItem.dart';
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
@@ -15,17 +16,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 TextStyle getOptionStyle() {
-  return TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  return const TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    Home(),
-    AddItem(),
+    const Home(),
+    const AddItem(),
     // QrCodeScanner(),
-    Profile(),
+    const Profile(),
   ];
 
   void _onItemTapped(int index) {
@@ -47,6 +48,15 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const QrCodeScanner(),
+              ));
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.chat_bubble),
+            tooltip: 'Open Chats',
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const ChatRoom(),
               ));
             },
           ),

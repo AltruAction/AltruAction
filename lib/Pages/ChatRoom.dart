@@ -8,6 +8,9 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+
+import '../app_state.dart';
 
 // For the testing purposes, you should probably use https://pub.dev/packages/uuid.
 String randomString() {
@@ -17,7 +20,15 @@ String randomString() {
 }
 
 class ChatRoom extends StatefulWidget {
-  const ChatRoom({super.key});
+  final String item_id;
+  final String current_id;
+  final String other_id;
+
+  const ChatRoom(
+      {super.key,
+      required this.item_id,
+      required this.current_id,
+      required this.other_id});
 
   @override
   State<ChatRoom> createState() => _ChatRoomState();
@@ -25,33 +36,31 @@ class ChatRoom extends StatefulWidget {
 
 class _ChatRoomState extends State<ChatRoom> {
   final List<types.Message> _messages = [];
-  final _user = const types.User(
-      id: '82091008-a484-4a89-ae75-a22bf8d6f3ac',
-      firstName: "User1",
-      imageUrl: 'https://api.dicebear.com/6.x/adventurer/svg?seed=Pumpkiaaa');
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: Chat(
-          messages: _messages,
-          onAttachmentPressed: _handleImageSelection,
-          // onMessageTap: _handleMessageTap,
-          onPreviewDataFetched: _handlePreviewDataFetched,
-          onSendPressed: _handleSendPressed,
-          user: _user,
-          theme: const DefaultChatTheme(
-            inputBackgroundColor: Colors.grey,
-            primaryColor: Colors.green,
-          ),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Chat(
+        messages: _messages,
+        onAttachmentPressed: _handleImageSelection,
+        // onMessageTap: _handleMessageTap,
+        onPreviewDataFetched: _handlePreviewDataFetched,
+        onSendPressed: _handleSendPressed,
+        user: types.User(id: widget.current_id),
+        theme: const DefaultChatTheme(
+          inputBackgroundColor: Colors.grey,
+          primaryColor: Colors.green,
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Icon(Icons.arrow_back),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-      );
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: const Icon(Icons.arrow_back),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+    );
+  }
 
   void _addMessage(types.Message message) {
     print(message);
@@ -134,7 +143,7 @@ class _ChatRoomState extends State<ChatRoom> {
       final image = await decodeImageFromList(bytes);
 
       final message = types.ImageMessage(
-        author: _user,
+        author: types.User(id: widget.current_id),
         createdAt: DateTime.now().millisecondsSinceEpoch,
         height: image.height.toDouble(),
         id: randomString(),
@@ -207,23 +216,9 @@ class _ChatRoomState extends State<ChatRoom> {
     });
   }
 
-  types.User randomUser() {
-    Random random = Random();
-    bool shouldAppendOther = random.nextBool();
-
-    if (shouldAppendOther) {
-      return const types.User(
-          id: '82091008-a484-4a89-ae75-a22bf8d6f3ac-other',
-          firstName: "User2",
-          imageUrl: 'https://api.dicebear.com/6.x/adventurer/svg?seed=Pumpkin');
-    } else {
-      return _user;
-    }
-  }
-
   void _handleSendPressed(types.PartialText message) {
     final textMessage = types.TextMessage(
-      author: randomUser(),
+      author: types.User(id: widget.current_id),
       createdAt: DateTime.now().millisecondsSinceEpoch,
       id: randomString(),
       text: message.text,

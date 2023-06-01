@@ -7,6 +7,8 @@ import 'package:recloset/Data/Data.dart';
 import 'package:recloset/Services/ItemService.dart';
 import 'package:recloset/Types/CommonTypes.dart';
 import "CollectionPage.dart";
+import 'package:recloset/Services/LocationService.dart';
+import 'package:geolocator/geolocator.dart';
 
 void showFilterModal(BuildContext context, FilterState filterState,
     Function setState, void Function() reset) {
@@ -51,6 +53,13 @@ class _HomeState extends State<Home> {
     super.initState();
     // Retrieve item records from Firestore
     getData();
+    if (LocationService.position == null) {
+      LocationService.determinePosition().then((_) => {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Location successfully detected!')),
+            )
+          });
+    }
   }
 
   void getData() async {
@@ -94,6 +103,19 @@ class _HomeState extends State<Home> {
           .where((element) => element.credits <= filterState.maxPrice!)
           .toList();
     }
+
+    // filter elements out whose distance exceeds max distance
+    filtered = filtered.where((element) {
+      if (element.latitude == null || element.longitude == null) {
+        return true;
+      }
+      double bearing = Geolocator.bearingBetween(
+          element.latitude ?? 0,
+          element.longitude ?? 0,
+          LocationService.position?.latitude ?? 0,
+          LocationService.position?.longitude ?? 0);
+      return bearing.abs() <= filterState.distance;
+    }).toList();
 
     // add filter for item deal option if deal options were chosen
     filtered = filtered.where((element) {

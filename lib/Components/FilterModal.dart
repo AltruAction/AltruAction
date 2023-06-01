@@ -35,7 +35,7 @@ class _FilterModalState extends State<FilterModal> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 600,
+        height: 700,
         padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
         child: Column(
           children: [
@@ -93,6 +93,30 @@ class _FilterModalState extends State<FilterModal> {
               isSelected: widget.filterState.dealOptions
                   .contains(ItemDealOption.meetup),
             ),
+            // Create a slider for the distance to search
+            const Subheader(text: "Distance"),
+            // Create a label to display filterState.distance
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(top: 10, left: 2),
+                child: Text("Maximum Distance: " +
+                    widget.filterState.distance.toString().split(".")[0] +
+                    " km"),
+              ),
+            ),
+            Slider(
+                value: widget.filterState.distance,
+                min: 5,
+                max: 100,
+                divisions: 100,
+                label: widget.filterState.distance.toString().split(".")[0] +
+                    " km",
+                onChanged: (value) {
+                  setState(() {
+                    widget.filterState.distance = value;
+                  });
+                }),
             SizedBox(
                 width: 500,
                 height: 40,

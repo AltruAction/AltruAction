@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:recloset/Components/Collection.dart';
 import 'package:recloset/Types/CommonTypes.dart';
 
@@ -87,6 +88,8 @@ class ItemService {
                   (element) =>
                       element.toString() == "ItemCategory.${data["category"]}",
                   orElse: () => ItemCategory.others));
+          newEntry.latitude = data["latitude"];
+          newEntry.longitude = data["longitude"];
           result[doc.id] = newEntry;
         }
       });

@@ -3,6 +3,7 @@ import 'package:recloset/Components/ItemCard.dart';
 import 'package:recloset/Pages/ViewItem.dart';
 import 'package:recloset/Pages/CollectionPage.dart';
 import 'package:recloset/Types/CommonTypes.dart' hide Item;
+import 'package:geolocator/geolocator.dart';
 
 class ItemCardData {
   // TODO: Change to UUID?
@@ -13,6 +14,8 @@ class ItemCardData {
   ItemCondition condition;
   List<ItemDealOption> dealOptions;
   ItemCategory category;
+  double? latitude;
+  double? longitude;
 
   ItemCardData(this.id, this.name, this.imagePath, this.credits, this.condition,
       this.dealOptions, this.category);

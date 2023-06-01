@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:recloset/Components/AddPhotoCollection.dart';
 import 'package:recloset/Components/ChooseCategory.dart';
 import 'package:recloset/Components/ChooseCondition.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:recloset/Services/LocationService.dart';
 
 import '../Components/AddPhoto.dart';
 import '../Data/ListingProvider.dart';
@@ -38,7 +40,11 @@ class _AddItemState extends State<AddItem> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final creditsController = TextEditingController();
-  final locationController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -213,18 +219,6 @@ class _AddItemState extends State<AddItem> {
                   }).toList(),
                 ),
                 const SizedBox(height: SPACING),
-                const Text(
-                  "Location",
-                  textAlign: TextAlign.left,
-                ),
-                TextFormField(
-                  controller: locationController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Where do you want to meet up?',
-                  ),
-                ),
-                const SizedBox(height: SPACING),
                 ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -242,8 +236,10 @@ class _AddItemState extends State<AddItem> {
                           "title": titleController.text,
                           "credits": int.tryParse(creditsController.text) ?? 0,
                           "size": _clothesSize,
-                          "location": locationController.text,
-                          "owner": FirebaseAuth.instance.currentUser!.uid,
+                          "latitude": LocationService.position ?? -1,
+                          "longitude": LocationService.position ?? -1,
+                          // TODO: in production, uncomment this
+                          // "owner": FirebaseAuth.instance.currentUser!.uid,
                           "timestamp": DateTime.now().millisecondsSinceEpoch,
                           "target": _target,
                         };

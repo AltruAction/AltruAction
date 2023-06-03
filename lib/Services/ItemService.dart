@@ -55,7 +55,7 @@ class ItemService {
     print(item);
     return item;
   }
-
+  
   Future<Map<String, ItemCardData>?> getItems() async {
     try {
       Map<String, ItemCardData> result = {};

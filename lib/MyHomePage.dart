@@ -13,8 +13,8 @@ import 'Pages/CollectionPage.dart';
 import 'Services/ItemService.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
+  MyHomePage({Key? key}) : super(key: key);
+  final String title = "ReCloset";
 
   @override
   _MyHomePageState createState() => _MyHomePageState();

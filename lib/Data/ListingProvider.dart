@@ -20,10 +20,10 @@ class ListingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addDownloadUrl(String url, int index) {
-    _items[index].downloadUrl = url;
-    notifyListeners();
-  }
+  // void addDownloadUrl(String url, int index) {
+  //   _items[index].downloadUrl = url;
+  //   notifyListeners();
+  // }
 
   /// Removes all items from the listing.
   void removeAll() {
@@ -34,7 +34,7 @@ class ListingProvider extends ChangeNotifier {
 
 class Item {
   XFile image;
-  String? downloadUrl;
+  // String? downloadUrl;
 
   Item(this.image);
 }

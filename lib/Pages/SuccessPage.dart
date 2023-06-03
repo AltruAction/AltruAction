@@ -62,7 +62,6 @@ class SuccessPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => MyHomePage(
-                      title: 'ReCloset',
                     ),
                   ));
                 },

@@ -11,6 +11,7 @@ class UserService {
       "uuid": user.UUID,
       "credits": user.credits,
       "listedItems": user.listedItems,
+      "flaggedItems": user.flaggedItems,
       "likes": user.likes,
       "transactions": user.transactions,
       "email": user.email,
@@ -22,19 +23,20 @@ class UserService {
     final data = snapshot.data();
 
     return UserState(
-      data?['uuid'] ?? '',
-      data?['credits'] ?? 0,
-      (data?['listedItems'] as List).map((item) => item as String).toList(),
-      (data?['likes'] as List).map((item) => item as String).toList(),
-      (data?['transactions'] as List)
-          .map((item) => item as Transaction)
-          .toList(),
-      data?['email'] ?? '',
-    );
+        data?['uuid'] ?? '',
+        data?['credits'] ?? 0,
+        (data?['listedItems'] as List).map((item) => item as String).toList(),
+        (data?['flaggedItems'] as List).map((item) => item as String).toList(),
+        (data?['likes'] as List).map((item) => item as String).toList(),
+        (data?['transactions'] as List)
+            .map((item) => item as Transaction)
+            .toList(),
+        data?['email'] ?? '',);
   }
 
   static Future<UserState?> createNewUser(String uuid, String email) async {
-    UserState? newUser = UserState(uuid, 0, [], [], [], email);
+    UserState? newUser =
+        UserState(uuid, 0, [], [], [], [], email);
     final user = toFirestore(newUser);
     await userDb
         .doc(uuid)

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +8,13 @@ import 'package:provider/provider.dart';
 import 'package:recloset/Components/AddPhotoCollection.dart';
 import 'package:recloset/Components/ChooseCategory.dart';
 import 'package:recloset/Components/ChooseCondition.dart';
+import 'package:http/http.dart' as http;
+import 'package:recloset/MyHomePage.dart';
+import 'package:recloset/Pages/Home.dart';
+
 
 import '../Data/ListingProvider.dart';
+import '../Types/CommonTypes.dart';
 
 class AddItem extends StatefulWidget {
   const AddItem({super.key});
@@ -38,6 +45,8 @@ class _AddItemState extends State<AddItem> {
   final descriptionController = TextEditingController();
   final creditsController = TextEditingController();
   final locationController = TextEditingController();
+  
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -225,36 +234,88 @@ class _AddItemState extends State<AddItem> {
                 ),
                 const SizedBox(height: SPACING),
                 ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        var db = FirebaseFirestore.instance;
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        // var db = FirebaseFirestore.instance;
                         var listing = Provider.of<ListingProvider>(context,
                             listen: false);
-                        final item = {
-                          "status": "OPEN",
-                          "category": listing.category,
-                          "condition": listing.condition,
-                          "dealOption": _dealOptionSelected,
-                          "description": descriptionController.text,
-                          "images":
-                              listing.items.map((e) => e.downloadUrl).toList(),
-                          "title": titleController.text,
-                          "credits": int.tryParse(creditsController.text) ?? 0,
-                          "size": _clothesSize,
-                          "location": locationController.text,
-                          "owner": FirebaseAuth.instance.currentUser!.uid,
-                          "timestamp": DateTime.now().millisecondsSinceEpoch,
-                          "target": _target,
-                        };
-                        db.collection("items").doc().set(item).onError(
-                            (e, _) => print("Error writing document: $e"));
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Listing Successful!')),
-                        );
+                        // Create multipart request
+                        var request = http.MultipartRequest('POST', Uri.parse("https://asia-southeast1-recloset-99e15.cloudfunctions.net/checkImage"));
+                        request.fields['status'] = "OPEN";
+                        request.fields['category'] = listing.category;
+                        request.fields['condition'] = listing.condition;
+                        request.fields['dealOption'] = _dealOptionSelected.map((dealOption) => '"$dealOption"').toList().toString();
+                        request.fields['description'] = descriptionController.text;
+                        request.fields['title'] = titleController.text;
+                        request.fields['credits'] = creditsController.text;
+                        request.fields['size'] = _clothesSize;
+                        request.fields['location'] = locationController.text;
+                        request.fields['owner'] = FirebaseAuth.instance.currentUser!.uid;
+                        request.fields['timestamp'] = DateTime.now().millisecondsSinceEpoch.toString();
+                        request.fields['target'] = _target;
+
+                        print(request.fields);
+                        // Add each image from listing.items into the request
+                        final images = listing.items.map((e) => e.image).toList();
+                        for (final image in images) {
+                          final stream = http.ByteStream(Stream.castFrom(image.openRead()));
+                          final length = await image.length();
+
+                          final multipartFile = http.MultipartFile('images', stream, length,
+                              filename: image.path.split('/').last);
+
+                          request.files.add(multipartFile);
+                        }
+
+                        // Send the request
+                        try {
+                          final response = await request.send();  
+                          final responseBody = await response.stream.bytesToString();
+                          final responseData = await jsonDecode(responseBody);
+
+                          // Check the response status
+                          if (response.statusCode == 200) {
+                            if (responseData.containsKey('message')) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(responseData['message'])),
+                              );
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Something went wrong!'))
+                              );
+                            }
+                          } else {
+                            if (responseData.containsKey('error')) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(responseData['error'])),
+                              );
+                              return;
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Something went wrong!'))
+                              );
+                            }
+                          }
+                        } catch (e) {
+                          print(e);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Something went wrong!')),
+                          );
+                        } finally {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                        }
                       }
                     },
-                    child: const Text('List it!'))
+                    child: _isLoading
+                    ? CircularProgressIndicator() // Show loading indicator when _isLoading is true
+                    : const Text('List it!'))
               ],
             ))));
   }

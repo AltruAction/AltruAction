@@ -75,32 +75,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
                       return Row(
                         children: [
-                          if (userRole == 'admin')
-                            IconButton(
-                              icon: const Icon(Icons.chat_bubble),
-                              tooltip: 'Open Chats',
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const ChatRoomList(),
-                                ));
-                              },
-                            ),
                           IconButton(
-                            icon: const Icon(Icons.manage_accounts),
-                            tooltip: 'Manage Moderation',
-                            onPressed: () async {
-                              Map<String, ItemCardData>? flaggedItems =
-                                  await itemService.getFlaggedItems();
-
+                            icon: const Icon(Icons.chat_bubble),
+                            tooltip: 'Open Chats',
+                            onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => CollectionPage(
-                                    collection:
-                                        flaggedItems?.values.toList() ?? [],
-                                    title: "Flagged Items",
-                                    isFlagged: true),
+                                builder: (context) => const ChatRoomList(),
                               ));
                             },
                           ),
+                          if (userRole == 'admin')
+                            IconButton(
+                              icon: const Icon(Icons.manage_accounts),
+                              tooltip: 'Manage Moderation',
+                              onPressed: () async {
+                                Map<String, ItemCardData>? flaggedItems =
+                                    await itemService.getFlaggedItems();
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => CollectionPage(
+                                      collection:
+                                          flaggedItems?.values.toList() ?? [],
+                                      title: "Flagged Items",
+                                      isFlagged: true),
+                                ));
+                              },
+                            ),
                         ],
                       );
                     } else {

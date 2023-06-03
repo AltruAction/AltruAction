@@ -8,6 +8,7 @@ import 'package:recloset/Components/ProfilePageName.dart';
 import 'package:recloset/Components/ProfilePicture.dart';
 import 'package:recloset/Pages/login.dart';
 import 'package:recloset/Types/UserTypes.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:recloset/services/UserService.dart';
 
 import '../Components/ProfilePageItemList.dart';
@@ -23,6 +24,48 @@ class Profile extends StatefulWidget {
 class _ProfilePageState extends State<Profile>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
+  List<AchievementCard> achievementArray = [];
+
+  void handleGivingAchievements() {
+    String uuid = FirebaseAuth.instance.currentUser?.uid ?? "";
+
+    if (uuid == "") {
+      return;
+    }
+
+    FirebaseFirestore.instance
+        .collection("transactions")
+        .where('giverId', isEqualTo: uuid)
+        .count()
+        .get()
+        .then((res) {
+      if (res.count > 0 && res.count < 10) {
+        achievementArray.add(const AchievementCard(
+            title: "Green Giver",
+            description:
+                "Congrats! You have given your first item away in the name of sustainability!",
+            imagePath: "assets/greenAchievement.png"));
+      } else if (res.count > 10 && res.count < 100) {
+        achievementArray.add(const AchievementCard(
+            title: "Eco-Pioneer",
+            description: "Gave 10 items",
+            imagePath: "assets/achievement.png"));
+      } else if (res.count > 100) {
+        achievementArray.add(const AchievementCard(
+            title: "Sustainability Trailblazer",
+            description: "Gave 100 items",
+            imagePath: "assets/achievement.png"));
+      }
+
+      if (res.count > 0) {
+        achievementArray.add(AchievementCard(
+            title: "Planet Protector",
+            description:
+                "You have saved ${2400 * res.count} litres of water by giving away ${res.count} item(s)! Keep up the good work!",
+            imagePath: "assets/waterAchievement.png"));
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -39,6 +82,9 @@ class _ProfilePageState extends State<Profile>
     if (uuid != null) {
       fetchAndUpdateUserState(uuid);
     }
+
+    handleGivingAchievements();
+
     super.initState();
   }
 
@@ -117,20 +163,25 @@ class _ProfilePageState extends State<Profile>
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    Center(child: ProfilePageItemList(ids: appState.userState?.listedItems ?? [])),
-                    Center(child: ProfilePageItemList(ids: appState.userState?.likes ?? [])),
+                    Center(
+                        child: ProfilePageItemList(
+                            ids: appState.userState?.listedItems ?? [])),
+                    Center(
+                        child: ProfilePageItemList(
+                            ids: appState.userState?.likes ?? [])),
                     Column(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
-                          AchievementCard(
-                              title: "this is a great achievement",
-                              description: "donated more than 10 items",
-                              imagePath: "assets/achievement.png"),
-                          AchievementCard(
-                              title: "this is a great achievement",
-                              description: "donated more than 10 items",
-                              imagePath: "assets/achievement.png"),
-                        ]),
+                        children: achievementArray),
+                    // const [
+                    //   AchievementCard(
+                    //       title: "this is a great achievement",
+                    //       description: "donated more than 10 items",
+                    //       imagePath: "assets/achievement.png"),
+                    //   AchievementCard(
+                    //       title: "this is a great achievement",
+                    //       description: "donated more than 10 items",
+                    //       imagePath: "assets/achievement.png"),
+                    // ]
                   ],
                 ),
               )),

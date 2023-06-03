@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recloset/Components/BottomNavigationBar.dart';
 import 'package:recloset/Components/Collection.dart';
 import 'package:recloset/Components/ItemCard.dart';
+import 'package:recloset/Pages/ViewFlaggedItem.dart';
 
 import 'ViewItem.dart';
 
@@ -10,6 +11,7 @@ class CollectionPage extends StatefulWidget {
   final bool isSearch;
   final List<ItemCardData> collection;
   final String searchQuery;
+  final bool isFlagged;
 
   const CollectionPage({
     Key? key,
@@ -17,7 +19,9 @@ class CollectionPage extends StatefulWidget {
     required this.title,
     this.isSearch = false,
     this.searchQuery = "",
-  }) : super(key: key);
+    bool isFlagged = false, // Add a default value here
+  })  : isFlagged = isFlagged ?? false, // Assign the value or default to false
+        super(key: key);
 
   @override
   State<CollectionPage> createState() => _CollectionPageState();
@@ -52,7 +56,9 @@ class _CollectionPageState extends State<CollectionPage> {
                 crossAxisCount: 2,
                 scrollDirection: Axis.vertical,
                 children: widget.collection
-                    .where((item) => item.name.toLowerCase().contains(widget.searchQuery.toLowerCase()))
+                    .where((item) => item.name
+                        .toLowerCase()
+                        .contains(widget.searchQuery.toLowerCase()))
                     .map((item) => InkWell(
                         child: ItemCard(
                           imagePath: item.imagePath,
@@ -61,7 +67,9 @@ class _CollectionPageState extends State<CollectionPage> {
                         ),
                         onTap: () =>
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ViewItem(id: item.id),
+                              builder: (context) => widget.isFlagged
+                                  ? ViewFlaggedItem(id: item.id)
+                                  : ViewItem(id: item.id),
                             ))))
                     .toList())
           ],

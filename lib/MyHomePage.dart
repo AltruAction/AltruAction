@@ -1,12 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:recloset/Components/BottomNavigationBar.dart';
+import 'package:recloset/Components/Collection.dart';
 import 'package:recloset/Pages/QrCodeScanner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import './Pages/Profile.dart';
 import './Pages/Home.dart';
 import './Pages/AddItem.dart';
+import 'Components/BottomNavigationBar.dart';
 import 'Pages/ChatRoomList.dart';
+import 'Pages/CollectionPage.dart';
+import 'Services/ItemService.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key}) : super(key: key);
@@ -22,6 +26,7 @@ TextStyle getOptionStyle() {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  ItemService itemService = ItemService();
 
   static final List<Widget> _widgetOptions = <Widget>[
     const Home(),
@@ -57,13 +62,49 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 User user = snapshot.data!;
-                return IconButton(
-                  icon: const Icon(Icons.chat_bubble),
-                  tooltip: 'Open Chats',
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const ChatRoomList(),
-                    ));
+                return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(user.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+                          snapshot.data!;
+                      String? userRole = userSnapshot.data()?['role'];
+
+                      return Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.chat_bubble),
+                            tooltip: 'Open Chats',
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const ChatRoomList(),
+                              ));
+                            },
+                          ),
+                          if (userRole == 'admin')
+                            IconButton(
+                              icon: const Icon(Icons.manage_accounts),
+                              tooltip: 'Manage Moderation',
+                              onPressed: () async {
+                                Map<String, ItemCardData>? flaggedItems =
+                                    await itemService.getFlaggedItems();
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => CollectionPage(
+                                      collection:
+                                          flaggedItems?.values.toList() ?? [],
+                                      title: "Flagged Items",
+                                      isFlagged: true),
+                                ));
+                              },
+                            ),
+                        ],
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
                   },
                 );
               } else {

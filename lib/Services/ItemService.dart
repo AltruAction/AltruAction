@@ -58,7 +58,7 @@ class ItemService {
   
   Future<Map<String, ItemCardData>?> getItems() async {
     try {
-      Map<String, ItemCardData> result = Map();
+      Map<String, ItemCardData> result = {};
       await db.collection("items").get().then((event) {
         for (var doc in event.docs) {
           var data = doc.data();
@@ -94,13 +94,13 @@ class ItemService {
       return result;
     } catch (e) {
       print(e);
-      return Map();
+      return {};
     }
   }
 
   Future<Map<String, ItemCardData>?> getFlaggedItems() async {
     try {
-      Map<String, ItemCardData> result = Map();
+      Map<String, ItemCardData> result = {};
       await db.collection("flaggedItems").get().then((event) {
         for (var doc in event.docs) {
           var data = doc.data();
@@ -136,7 +136,15 @@ class ItemService {
       return result;
     } catch (e) {
       print(e);
-      return Map();
+      return {};
     }
+  }
+
+  Future<Item> getFlaggedItemById(String id) async {
+    final doc = await db.collection('flaggedItems').doc(id).get();
+    // print(doc.data());
+    final item = Item.fromSnapshot(doc);
+    print(item);
+    return item;
   }
 }

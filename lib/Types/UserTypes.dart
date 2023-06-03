@@ -8,6 +8,7 @@ class UserState {
   List<String> likes;
   List<Transaction> transactions;
   String email;
+  String? role;
 
   UserState(this.UUID, this.credits, this.listedItems, this.flaggedItems, this.likes,
       this.transactions, this.email);
@@ -19,6 +20,7 @@ class UserState {
     List<String>? likes,
     List<Transaction>? transactions,
     String? email,
+    String? role, // Include role in the copyWith method
   }) {
     return UserState(UUID ?? this.UUID, 
                       credits ?? this.credits, 

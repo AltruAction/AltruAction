@@ -61,17 +61,26 @@ class UserService {
     }
   }
 
-  static Future<void> updateLikeItem(String uuid, String itemId, bool isLike) async {
+  static Future<void> updateLikeItem(
+      String uuid, String itemId, bool isLike) async {
     List<Future> futures;
     if (isLike) {
       futures = [
-        userDb.doc(uuid).update({ "likes": FieldValue.arrayUnion([itemId])}),
-        itemDb.doc(itemId).update({ "likes": FieldValue.arrayUnion([uuid])})
+        userDb.doc(uuid).update({
+          "likes": FieldValue.arrayUnion([itemId])
+        }),
+        itemDb.doc(itemId).update({
+          "likes": FieldValue.arrayUnion([uuid])
+        })
       ];
     } else {
       futures = [
-        userDb.doc(uuid).update({ "likes": FieldValue.arrayRemove([itemId])}),
-        itemDb.doc(itemId).update({ "likes": FieldValue.arrayRemove([uuid])})
+        userDb.doc(uuid).update({
+          "likes": FieldValue.arrayRemove([itemId])
+        }),
+        itemDb.doc(itemId).update({
+          "likes": FieldValue.arrayRemove([uuid])
+        })
       ];
     }
 

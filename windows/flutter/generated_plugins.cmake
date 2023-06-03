@@ -4,8 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   desktop_webview_auth
-  geolocator_windows
   firebase_core
+  geolocator_windows
   share_plus
   url_launcher_windows
 )

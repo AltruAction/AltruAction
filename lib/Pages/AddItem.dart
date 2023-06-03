@@ -243,7 +243,7 @@ class _AddItemState extends State<AddItem> {
                           "dealOption": _dealOptionSelected,
                           "description": descriptionController.text,
                           "images":
-                              listing.items.map((e) => e.downloadUrl).toList(),
+                              listing.items.map((e) => e.image).toList(),
                           "title": titleController.text,
                           "credits": int.tryParse(creditsController.text) ?? 0,
                           "size": _clothesSize,
@@ -254,8 +254,6 @@ class _AddItemState extends State<AddItem> {
                           "timestamp": DateTime.now().millisecondsSinceEpoch,
                           "target": _target,
                         };
-                        db.collection("items").doc().set(item).onError(
-                            (e, _) => print("Error writing document: $e"));
                         
                         // Create multipart request
                         var request = http.MultipartRequest('POST', Uri.parse("https://asia-southeast1-recloset-99e15.cloudfunctions.net/checkImage"));

@@ -124,7 +124,7 @@ class _ProfilePageState extends State<Profile>
               margin: const EdgeInsets.only(top: 75),
               child: ProfilePageName(
                   displayName: appState.user?.displayName ?? "",
-                  bio: "test bio")),
+                  bio: "Save the Earth!")),
           Container(
               margin: const EdgeInsets.only(
                   left: 10, right: 10, top: 15, bottom: 25),

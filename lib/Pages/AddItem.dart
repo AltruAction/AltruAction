@@ -8,10 +8,11 @@ import 'package:provider/provider.dart';
 import 'package:recloset/Components/AddPhotoCollection.dart';
 import 'package:recloset/Components/ChooseCategory.dart';
 import 'package:recloset/Components/ChooseCondition.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:recloset/Services/LocationService.dart';
 import 'package:http/http.dart' as http;
 import 'package:recloset/MyHomePage.dart';
 import 'package:recloset/Pages/Home.dart';
-
 
 import '../Data/ListingProvider.dart';
 import '../Types/CommonTypes.dart';
@@ -45,9 +46,13 @@ class _AddItemState extends State<AddItem> {
   final descriptionController = TextEditingController();
   final creditsController = TextEditingController();
   final locationController = TextEditingController();
-  
   bool _isLoading = false;
-
+  
+  @override
+  void initState() {
+    super.initState();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -221,18 +226,6 @@ class _AddItemState extends State<AddItem> {
                   }).toList(),
                 ),
                 const SizedBox(height: SPACING),
-                const Text(
-                  "Location",
-                  textAlign: TextAlign.left,
-                ),
-                TextFormField(
-                  controller: locationController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Where do you want to meet up?',
-                  ),
-                ),
-                const SizedBox(height: SPACING),
                 ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
@@ -243,6 +236,27 @@ class _AddItemState extends State<AddItem> {
                         var listing = Provider.of<ListingProvider>(context,
                             listen: false);
 
+                        final item = {
+                          "status": "OPEN",
+                          "category": listing.category,
+                          "condition": listing.condition,
+                          "dealOption": _dealOptionSelected,
+                          "description": descriptionController.text,
+                          "images":
+                              listing.items.map((e) => e.downloadUrl).toList(),
+                          "title": titleController.text,
+                          "credits": int.tryParse(creditsController.text) ?? 0,
+                          "size": _clothesSize,
+                          "latitude": LocationService.position ?? -1,
+                          "longitude": LocationService.position ?? -1,
+                          // TODO: in production, uncomment this
+                          // "owner": FirebaseAuth.instance.currentUser!.uid,
+                          "timestamp": DateTime.now().millisecondsSinceEpoch,
+                          "target": _target,
+                        };
+                        db.collection("items").doc().set(item).onError(
+                            (e, _) => print("Error writing document: $e"));
+                        
                         // Create multipart request
                         var request = http.MultipartRequest('POST', Uri.parse("https://asia-southeast1-recloset-99e15.cloudfunctions.net/checkImage"));
                         request.fields['status'] = "OPEN";

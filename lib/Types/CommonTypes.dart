@@ -116,11 +116,13 @@ class FilterState {
   late int? minPrice;
   late int? maxPrice;
   late List<ItemDealOption> dealOptions;
+  late double distance; // In km
 
   FilterState.empty() {
     condition = ItemCondition.none;
     minPrice = -1;
     maxPrice = -1;
+    distance = 100;
     dealOptions = [];
   }
 

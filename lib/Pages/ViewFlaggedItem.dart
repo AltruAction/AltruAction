@@ -1,9 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:recloset/Components/Carousel.dart';
 import 'package:flutter/services.dart';
-import 'package:recloset/Components/ContactDialog.dart';
-import 'package:recloset/Pages/ChatRoom.dart';
 import 'package:provider/provider.dart';
 import 'package:recloset/Services/ItemService.dart';
 import 'package:recloset/Types/UserTypes.dart';
@@ -47,6 +46,15 @@ class _ViewFlaggedItemState extends State<ViewFlaggedItem> {
   String email = "";
   String size = "";
   String current_user = "";
+
+  void showNotification(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -238,23 +246,45 @@ class _ViewFlaggedItemState extends State<ViewFlaggedItem> {
           Consumer<ApplicationState>(builder: (context, appState, _) {
         String? uid = appState.user?.uid;
         return FlaggedItemBottomNavigationBar(
-          onAccept: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return ContactDialog(email: email);
-              },
-            );
+          onAccept: () async {
+            final doc = await FirebaseFirestore.instance
+                .collection('flaggedItems')
+                .doc(widget.id)
+                .get();
+            final data = doc.data();
+
+            if (data != null) {
+              // Copy the flagged item to the items collection
+              await FirebaseFirestore.instance.collection('items').add(data);
+
+              // Delete the flagged item from the flaggedItems collection
+              await FirebaseFirestore.instance
+                  .collection('flaggedItems')
+                  .doc(widget.id)
+                  .delete();
+
+              // Show a success notification
+              showNotification('Item accepted successfully');
+
+              // Navigate back to the previous page
+              Navigator.of(context).pop();
+            } else {
+              // Handle the case when the flagged item doesn't exist
+              showNotification('Item not found');
+            }
           },
-          onReject: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ChatRoom(
-                chat_id: '${widget.id}_$current_user',
-                item_id: widget.id,
-                other_id: owner,
-                current_id: current_user,
-              ),
-            ));
+          onReject: () async {
+            // Delete the flagged item from the flaggedItems collection
+            await FirebaseFirestore.instance
+                .collection('flaggedItems')
+                .doc(widget.id)
+                .delete();
+
+            // Show a notification
+            showNotification('Item rejected successfully');
+
+            // Navigate back to the previous page
+            Navigator.of(context).pop();
           },
         );
       }),

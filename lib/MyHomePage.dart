@@ -7,8 +7,8 @@ import './Pages/Home.dart';
 import './Pages/AddItem.dart';
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
+  MyHomePage({Key? key}) : super(key: key);
+  final String title = "ReCloset";
 
   @override
   _MyHomePageState createState() => _MyHomePageState();

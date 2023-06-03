@@ -21,8 +21,11 @@ class ChatRoom extends StatefulWidget {
   State<ChatRoom> createState() => _ChatRoomState();
 }
 
+const SYSTEM_ID = "RECLOSET_SYSTEM";
+
 class _ChatRoomState extends State<ChatRoom> {
   final List<types.Message> _messages = [];
+  bool isOfferIntiated = false;
 
   void initChat() {
     final CollectionReference chatsCollection =
@@ -55,16 +58,30 @@ class _ChatRoomState extends State<ChatRoom> {
                 Map<String, dynamic> author = doc['author'];
                 String text = doc['text'];
                 int createdAt = doc['createdAt'];
+                String type = doc['type'];
                 print("listen: ");
                 print(doc);
 
-                final textMessage = types.TextMessage(
-                  author: types.User(id: author['id']),
-                  createdAt: createdAt,
-                  id: doc.id,
-                  text: text,
-                );
-                _addMessage(textMessage);
+                if (type == 'system') {
+                  final systemMessage = types.SystemMessage(
+                    createdAt: createdAt,
+                    id: doc.id,
+                    text: text,
+                  );
+                  _addMessage(systemMessage);
+                  isOfferIntiated = true;
+                } else {
+                  final textMessage = types.TextMessage(
+                    author: types.User(
+                        id: author['id'],
+                        imageUrl:
+                            'https://api.dicebear.com/6.x/fun-emoji/png?seed=${author['id']}'),
+                    createdAt: createdAt,
+                    id: doc.id,
+                    text: text,
+                  );
+                  _addMessage(textMessage);
+                }
               }
             });
           } else {
@@ -106,14 +123,28 @@ class _ChatRoomState extends State<ChatRoom> {
                   Map<String, dynamic> author = doc['author'];
                   String text = doc['text'];
                   int createdAt = doc['createdAt'];
+                  String type = doc['type'];
 
-                  final textMessage = types.TextMessage(
-                    author: types.User(id: author['id']),
-                    createdAt: createdAt,
-                    id: doc.id,
-                    text: text,
-                  );
-                  _addMessage(textMessage);
+                  if (type == 'system') {
+                    final systemMessage = types.SystemMessage(
+                      createdAt: createdAt,
+                      id: doc.id,
+                      text: text,
+                    );
+                    _addMessage(systemMessage);
+                    isOfferIntiated = true;
+                  } else {
+                    final textMessage = types.TextMessage(
+                      author: types.User(
+                          id: author['id'],
+                          imageUrl:
+                              'https://api.dicebear.com/6.x/fun-emoji/png?seed=${author['id']}'),
+                      createdAt: createdAt,
+                      id: doc.id,
+                      text: text,
+                    );
+                    _addMessage(textMessage);
+                  }
                 }
               })
             })
@@ -132,7 +163,86 @@ class _ChatRoomState extends State<ChatRoom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: FutureBuilder<DocumentSnapshot>(
+          future: FirebaseFirestore.instance
+              .collection('items')
+              .doc(widget.item_id)
+              .get(),
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // Show a loading indicator while fetching the data
+              return AppBar(
+                title: const Text('Loading...'),
+              );
+            } else if (snapshot.hasError || !snapshot.hasData) {
+              // Handle any errors that occurred during fetching
+              return AppBar(
+                title: const Text('Error'),
+              );
+            } else {
+              // Data fetched successfully, update the AppBar title with the item name
+              String itemName = snapshot.data!.get('title') as String;
+              String url = snapshot.data!.get('images')[0] as String;
+              String owner = snapshot.data!.get('owner') as String;
+              return AppBar(
+                title: Text(itemName),
+                actions: [
+                  if (widget.current_id != owner)
+                    InkWell(
+                      onTap: () {
+                        _handleSystemMessage(
+                            'Offer Initiated for $itemName, the owner can choose to accept it by clicking the "Accept Offer" button above');
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15.0),
+                        child: Center(
+                          child: Text(
+                            "Initiate Offer",
+                            style: TextStyle(
+                              decoration:
+                                  TextDecoration.underline, // Add underline
+                              fontSize: 18.0, // Increase font size
+                              color: Colors.white,
+                            ), // Set the text color
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (widget.current_id == owner && isOfferIntiated)
+                    InkWell(
+                      onTap: () {
+                        // Handle button press
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15.0),
+                        child: Center(
+                          child: Text(
+                            "Accept Offer",
+                            style: TextStyle(
+                              decoration:
+                                  TextDecoration.underline, // Add underline
+                              fontSize: 18.0, // Increase font size
+                              color: Colors.white,
+                            ), // Set the text color
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (url != null)
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(url),
+                    )
+                ],
+              );
+            }
+          },
+        ),
+      ),
       body: Chat(
+        showUserAvatars: true,
         messages: _messages,
         // onAttachmentPressed: _handleImageSelection,
         // onMessageTap: _handleMessageTap,
@@ -144,13 +254,6 @@ class _ChatRoomState extends State<ChatRoom> {
           primaryColor: Colors.green,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: const Icon(Icons.arrow_back),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
   }
 
@@ -308,6 +411,37 @@ class _ChatRoomState extends State<ChatRoom> {
 
     setState(() {
       _messages[index] = updatedMessage;
+    });
+  }
+
+  void _handleSystemMessage(String message) {
+    const uuid = Uuid();
+    final timeNow = DateTime.now().millisecondsSinceEpoch;
+
+    final types.SystemMessage systemMessage = types.SystemMessage(
+      createdAt: timeNow,
+      id: uuid.v4(), // Generate a unique identifier using UUID
+      text: message,
+    );
+
+    // Save the text message to the Firestore collection
+    FirebaseFirestore.instance
+        .collection('messages')
+        .doc(systemMessage.id)
+        .set({
+      ...systemMessage.toJson(),
+      'chat_id': widget.chat_id,
+    }).then((_) {
+      FirebaseFirestore.instance
+          .collection('item_chats')
+          .doc(widget.chat_id)
+          .update({
+        'last_updated': timeNow,
+        'last_message': message,
+      });
+    }).catchError((error) {
+      // Error occurred while sending the message
+      print('Error sending message: $error');
     });
   }
 

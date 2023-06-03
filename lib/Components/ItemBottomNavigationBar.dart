@@ -8,13 +8,17 @@ class ItemBottomNavigationBar extends StatelessWidget {
   final VoidCallback onShowContactInfoPressed;
   final VoidCallback onEditPressed;
   final VoidCallback onGenerateQRCodePressed;
+  final VoidCallback onChatPressed;
+
   final bool isGiven;
 
-  ItemBottomNavigationBar(
-      {required this.isOwner,
+  const ItemBottomNavigationBar(
+      {super.key,
+      required this.isOwner,
       required this.liked,
       required this.likes,
       required this.onLikePressed,
+      required this.onChatPressed,
       required this.onShowContactInfoPressed,
       required this.onEditPressed,
       required this.onGenerateQRCodePressed,
@@ -30,7 +34,7 @@ class ItemBottomNavigationBar extends StatelessWidget {
           if (isOwner)
             TextButton(
               onPressed: onEditPressed,
-              child: Text('Edit Listing'),
+              child: const Text('Edit Listing'),
             )
           else
             Row(
@@ -53,6 +57,11 @@ class ItemBottomNavigationBar extends StatelessWidget {
                     : onShowContactInfoPressed,
             child: Text(isOwner ? 'Generate QR Code' : 'Show Contact Info'),
           ),
+          if (!isOwner)
+            ElevatedButton(
+              onPressed: isGiven ? null : onChatPressed,
+              child: const Text('Chat'),
+            ),
         ],
       ),
     );

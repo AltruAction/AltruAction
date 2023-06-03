@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:recloset/Components/BottomNavigationBar.dart';
 import 'package:recloset/Pages/QrCodeScanner.dart';
-import 'package:recloset/Pages/ChatRoom.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import './Pages/Profile.dart';
 import './Pages/Home.dart';
 import './Pages/AddItem.dart';
+import 'Pages/ChatRoomList.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -51,13 +52,23 @@ class _MyHomePageState extends State<MyHomePage> {
               ));
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.chat_bubble),
-            tooltip: 'Open Chats',
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const ChatRoom(),
-              ));
+          StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                User user = snapshot.data!;
+                return IconButton(
+                  icon: const Icon(Icons.chat_bubble),
+                  tooltip: 'Open Chats',
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const ChatRoomList(),
+                    ));
+                  },
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
             },
           ),
         ],

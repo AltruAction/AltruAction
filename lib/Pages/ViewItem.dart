@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:recloset/Components/Carousel.dart';
 import 'package:flutter/services.dart';
 import 'package:recloset/Components/ContactDialog.dart';
+import 'package:recloset/Pages/ChatRoom.dart';
 import 'package:recloset/Pages/QrCodeGen.dart';
 import 'package:provider/provider.dart';
 import 'package:recloset/Services/ItemService.dart';
@@ -23,7 +25,7 @@ final List<String> imgList = [
 class ViewItem extends StatefulWidget {
   final String id;
 
-  const ViewItem({Key? key, required this.id});
+  const ViewItem({super.key, required this.id});
 
   @override
   State<StatefulWidget> createState() => _ViewItemState();
@@ -45,6 +47,7 @@ class _ViewItemState extends State<ViewItem> {
   String owner = "";
   String email = "";
   String size = "";
+  String current_user = "";
 
   @override
   void initState() {
@@ -76,6 +79,7 @@ class _ViewItemState extends State<ViewItem> {
       owner = item.owner;
       email = user?.email ?? "";
       size = item.size;
+      current_user = FirebaseAuth.instance.currentUser!.uid;
     });
   }
 
@@ -83,14 +87,14 @@ class _ViewItemState extends State<ViewItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(shrinkWrap: true, children: [
-        Container(
+        SizedBox(
             height: MediaQuery.of(context).size.height * 0.3,
             child: Carousel(imageUrls: imageUrls)),
         Container(
-          padding: EdgeInsets.only(left: 10.0),
+          padding: const EdgeInsets.only(left: 10.0),
           child: Text(
-            '$name',
-            style: TextStyle(
+            name,
+            style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -98,129 +102,129 @@ class _ViewItemState extends State<ViewItem> {
           ),
         ),
         Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               children: [
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.calendar_today,
                       color: Colors.grey,
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Text('Posted on ${date.day}/${date.month}/${date.year}'),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.monetization_on,
                       color: Colors.grey,
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Text('$credits'),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.favorite,
                       color: Colors.grey,
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Text(likes.length.toString()),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.info,
                       color: Colors.grey,
                     ),
-                    SizedBox(width: 10),
-                    Text('$status'),
+                    const SizedBox(width: 10),
+                    Text(status),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.category,
                       color: Colors.grey,
                     ),
-                    SizedBox(width: 10),
-                    Text('$category'),
+                    const SizedBox(width: 10),
+                    Text(category),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.check_circle,
                       color: Colors.grey,
                     ),
-                    SizedBox(width: 10),
-                    Text('$condition'),
+                    const SizedBox(width: 10),
+                    Text(condition),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.person,
                       color: Colors.grey,
                     ),
-                    SizedBox(width: 10),
-                    Text('$target'),
+                    const SizedBox(width: 10),
+                    Text(target),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.straighten,
                       color: Colors.grey,
                     ),
-                    SizedBox(width: 10),
-                    Text('$size'),
+                    const SizedBox(width: 10),
+                    Text(size),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.location_on,
                       color: Colors.grey,
                     ),
-                    SizedBox(width: 10),
-                    Text('$location'),
+                    const SizedBox(width: 10),
+                    Text(location),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.handshake,
                       color: Colors.grey,
                     ),
-                    SizedBox(width: 10),
-                    Text('$dealOptions'),
+                    const SizedBox(width: 10),
+                    Text(dealOptions),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.description,
                       color: Colors.grey,
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Flexible(
                       child: Text(
-                        '$description',
+                        description,
                         maxLines: 100,
                         overflow: TextOverflow
                             .ellipsis, // Change to the type of overflow you want
@@ -268,6 +272,16 @@ class _ViewItemState extends State<ViewItem> {
               },
             );
           },
+          onChatPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ChatRoom(
+                chat_id: '${widget.id}_$current_user',
+                item_id: widget.id,
+                other_id: owner,
+                current_id: current_user,
+              ),
+            ));
+          },
           onEditPressed: () => {},
           onGenerateQRCodePressed: () {
             Navigator.of(context).push(MaterialPageRoute(
@@ -306,3 +320,5 @@ class _ViewItemState extends State<ViewItem> {
     super.dispose();
   }
 }
+
+class ChatScreen {}

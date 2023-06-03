@@ -58,7 +58,7 @@ class ItemService {
 
   Future<Map<String, ItemCardData>?> getItems() async {
     try {
-      Map<String, ItemCardData> result = Map();
+      Map<String, ItemCardData> result = {};
       await db.collection("items").get().then((event) {
         for (var doc in event.docs) {
           var data = doc.data();
@@ -94,7 +94,57 @@ class ItemService {
       return result;
     } catch (e) {
       print(e);
-      return Map();
+      return {};
     }
+  }
+
+  Future<Map<String, ItemCardData>?> getFlaggedItems() async {
+    try {
+      Map<String, ItemCardData> result = {};
+      await db.collection("flaggedItems").get().then((event) {
+        for (var doc in event.docs) {
+          var data = doc.data();
+          print(data);
+          List<dynamic> dataDealOptions = data["dealOption"];
+          List<dynamic>? images = data["images"];
+
+          var newEntry = ItemCardData(
+              doc.id,
+              data["title"] ?? "",
+              images != null && images.isNotEmpty && images[0] != null
+                  ? images[0]
+                  : "",
+              data["credits"] ?? 1,
+              ItemCondition.values.firstWhere(
+                  (element) =>
+                      element.toString() ==
+                      "ItemCondition.${data['condition']}",
+                  orElse: () => ItemCondition.none),
+              dataDealOptions
+                  .map((e) => ItemDealOption.values.firstWhere(
+                      (element) => element.toString() == "ItemDealOption.$e",
+                      orElse: () => ItemDealOption.none))
+                  .toList(),
+              ItemCategory.values.firstWhere(
+                  (element) =>
+                      element.toString() == "ItemCategory.${data["category"]}",
+                  orElse: () => ItemCategory.others));
+          result[doc.id] = newEntry;
+        }
+      });
+      print(result);
+      return result;
+    } catch (e) {
+      print(e);
+      return {};
+    }
+  }
+
+  Future<Item> getFlaggedItemById(String id) async {
+    final doc = await db.collection('flaggedItems').doc(id).get();
+    // print(doc.data());
+    final item = Item.fromSnapshot(doc);
+    print(item);
+    return item;
   }
 }

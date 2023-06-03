@@ -33,26 +33,24 @@ class _AddPhotoState extends State<AddPhoto> {
     imagePicker = ImagePicker();
   }
 
-  Future uploadFile() async {
-    if (_image == null) return;
-    final fileName = p.basename(_image!.path);
-    final destination = 'files/$fileName';
+  // Future uploadFile() async {
+  //   if (_image == null) return;
+  //   final fileName = p.basename(_image!.path);
+  //   final destination = 'files/$fileName';
 
-    try {
-      final ref = firebase_storage.FirebaseStorage.instance
-          .ref(destination)
-          .child('file/');
+  //   try {
+  //     final ref = firebase_storage.FirebaseStorage.instance
+  //         .ref(destination)
+  //         .child('file/');
 
-      await ref.putFile(_image!);
-      var downloadUrl = await ref.getDownloadURL();
-      Provider.of<ListingProvider>(context, listen: false)
-          .addDownloadUrl(downloadUrl, widget.index);
-      // print("downloadUrl");
-      // print(downloadUrl);
-    } catch (e) {
-      print('error occured');
-    }
-  }
+  //     await ref.putFile(_image!);
+  //     var downloadUrl = await ref.getDownloadURL();
+  //     Provider.of<ListingProvider>(context, listen: false)
+  //         .addDownloadUrl(downloadUrl, widget.index);
+  //   } catch (e) {
+  //     print('error occured');
+  //   }
+  // }
 
   Future getImagefromCamera() async {
     XFile image = await imagePicker.pickImage(source: ImageSource.camera);
@@ -62,7 +60,7 @@ class _AddPhotoState extends State<AddPhoto> {
 
     setState(() {
       _image = File(image.path);
-      uploadFile();
+      // uploadFile();
     });
   }
 
@@ -75,7 +73,7 @@ class _AddPhotoState extends State<AddPhoto> {
 
     setState(() {
       _image = File(image.path);
-      uploadFile();
+      // uploadFile();
     });
   }
 

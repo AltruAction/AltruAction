@@ -126,3 +126,5 @@ class FilterState {
 
   FilterState(this.condition, this.dealOptions, this.maxPrice, this.minPrice);
 }
+
+enum ApprovalStatus { pending, approved, rejected }

@@ -6,9 +6,12 @@ import 'package:provider/provider.dart';
 import 'package:recloset/Components/AddPhotoCollection.dart';
 import 'package:recloset/Components/ChooseCategory.dart';
 import 'package:recloset/Components/ChooseCondition.dart';
+import 'package:http/http.dart' as http;
+
 
 import '../Components/AddPhoto.dart';
 import '../Data/ListingProvider.dart';
+import '../Types/CommonTypes.dart';
 
 class AddItem extends StatefulWidget {
   const AddItem({super.key});
@@ -226,33 +229,81 @@ class _AddItemState extends State<AddItem> {
                 ),
                 const SizedBox(height: SPACING),
                 ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        var db = FirebaseFirestore.instance;
+                        // var db = FirebaseFirestore.instance;
                         var listing = Provider.of<ListingProvider>(context,
                             listen: false);
-                        final item = {
-                          "status": "OPEN",
-                          "category": listing.category,
-                          "condition": listing.condition,
-                          "dealOption": _dealOptionSelected,
-                          "description": descriptionController.text,
-                          "images":
-                              listing.items.map((e) => e.downloadUrl).toList(),
-                          "title": titleController.text,
-                          "credits": int.tryParse(creditsController.text) ?? 0,
-                          "size": _clothesSize,
-                          "location": locationController.text,
-                          "owner": FirebaseAuth.instance.currentUser!.uid,
-                          "timestamp": DateTime.now().millisecondsSinceEpoch,
-                          "target": _target,
-                        };
-                        db.collection("items").doc().set(item).onError(
-                            (e, _) => print("Error writing document: $e"));
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Listing Successful!')),
-                        );
+                        // Create multipart request
+                        var request = http.MultipartRequest('POST', Uri.parse("http://127.0.0.1:5001/recloset-99e15/us-central1/checkImage/"));
+                        request.fields['status'] = "OPEN";
+                        request.fields['category'] = listing.category;
+                        request.fields['condition'] = listing.condition;
+                        request.fields['dealOption'] = _dealOptionSelected.toString();
+                        request.fields['description'] = descriptionController.text;
+                        request.fields['title'] = titleController.text;
+                        request.fields['credits'] = creditsController.text;
+                        request.fields['size'] = _clothesSize;
+                        request.fields['location'] = locationController.text;
+                        request.fields['owner'] = FirebaseAuth.instance.currentUser!.uid;
+                        request.fields['timestamp'] = DateTime.now().millisecondsSinceEpoch.toString();
+                        request.fields['target'] = _target;
+                        request.fields['is_approved'] = ApprovalStatus.pending.toString();
+                        // Add each image from listing.items into the request
+                        final images = listing.items.map((e) => e.image).toList();
+                        for (final image in images) {
+                          final stream = http.ByteStream(Stream.castFrom(image.openRead()));
+                          final length = await image.length();
+
+                          final multipartFile = http.MultipartFile('images', stream, length,
+                              filename: image.path.split('/').last);
+
+                          request.files.add(multipartFile);
+                        }
+
+                        print("request: " + request.toString());
+
+                        // Send the request
+                        try {
+                          final response = await request.send();  
+                          print("response: " + response.toString());
+
+                        // Check the response status
+                        if (response.statusCode == 200) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Listing Successful!')),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Listing Unsuccessuful')),
+                          );
+                        }
+                        } catch (e) {
+                          print(e);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Something went wrong!')),
+                          );
+                        }
+                        // final item = {
+                        //   "status": "OPEN",
+                        //   "category": listing.category,
+                        //   "condition": listing.condition,
+                        //   "dealOption": _dealOptionSelected,
+                        //   "description": descriptionController.text,
+                        //   "images":
+                        //       listing.items.map((e) => e.image).toList(),
+                        //   "title": titleController.text,
+                        //   "credits": int.tryParse(creditsController.text) ?? 0,
+                        //   "size": _clothesSize,
+                        //   "location": locationController.text,
+                        //   "owner": FirebaseAuth.instance.currentUser!.uid,
+                        //   "timestamp": DateTime.now().millisecondsSinceEpoch,
+                        //   "target": _target,
+                        //   "is_approved": ApprovalStatus.pending
+                        // };
+                        // db.collection("items").doc().set(item).onError(
+                        //     (e, _) => print("Error writing document: $e"));
                       }
                     },
                     child: const Text('List it!'))

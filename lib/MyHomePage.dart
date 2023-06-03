@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:recloset/Components/BottomNavigationBar.dart';
 import 'package:recloset/Pages/QrCodeScanner.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import './Pages/Profile.dart';
 import './Pages/Home.dart';
 import './Pages/AddItem.dart';
+import 'Pages/ChatRoomList.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key}) : super(key: key);
@@ -15,17 +17,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 TextStyle getOptionStyle() {
-  return TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  return const TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    Home(),
-    AddItem(),
+    const Home(),
+    const AddItem(),
     // QrCodeScanner(),
-    Profile(),
+    const Profile(),
   ];
 
   void _onItemTapped(int index) {
@@ -48,6 +50,25 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const QrCodeScanner(),
               ));
+            },
+          ),
+          StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                User user = snapshot.data!;
+                return IconButton(
+                  icon: const Icon(Icons.chat_bubble),
+                  tooltip: 'Open Chats',
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const ChatRoomList(),
+                    ));
+                  },
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
             },
           ),
         ],

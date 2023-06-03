@@ -68,8 +68,9 @@ class _ProfilePageState extends State<Profile>
               const ProfilePageHeader(),
               Positioned(
                   top: 100,
-                  child:
-                      ProfilePicture(imagePath: appState.user?.photoURL ?? ""))
+                  child: ProfilePicture(
+                      imagePath:
+                          'https://api.dicebear.com/6.x/fun-emoji/png?seed=${Provider.of<ApplicationState>(context, listen: false).user?.uid}'))
             ],
           ),
           Container(
@@ -117,8 +118,12 @@ class _ProfilePageState extends State<Profile>
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    Center(child: ProfilePageItemList(ids: appState.userState?.listedItems ?? [])),
-                    Center(child: ProfilePageItemList(ids: appState.userState?.likes ?? [])),
+                    Center(
+                        child: ProfilePageItemList(
+                            ids: appState.userState?.listedItems ?? [])),
+                    Center(
+                        child: ProfilePageItemList(
+                            ids: appState.userState?.likes ?? [])),
                     Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: const [

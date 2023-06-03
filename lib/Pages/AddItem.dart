@@ -13,7 +13,6 @@ import 'package:recloset/MyHomePage.dart';
 import 'package:recloset/Pages/Home.dart';
 
 
-import '../Components/AddPhoto.dart';
 import '../Data/ListingProvider.dart';
 import '../Types/CommonTypes.dart';
 

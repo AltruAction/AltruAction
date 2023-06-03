@@ -137,6 +137,10 @@ class _ChatRoomState extends State<ChatRoom> {
                     );
                     _addMessage(systemMessage);
                     isOfferIntiated = true;
+
+                    if (text.contains("Congratulations!")) {
+                      _navigateToSuccessPage();
+                    }
                   } else {
                     final textMessage = types.TextMessage(
                       author: types.User(
@@ -188,7 +192,10 @@ class _ChatRoomState extends State<ChatRoom> {
     Item item = await ItemService().getItemById(widget.item_id);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SuccessPage(item: item)),
+      MaterialPageRoute(
+          builder: (context) => SuccessPage(
+              item: item,
+              isOwner: widget.chat_id.split('_')[1] != widget.current_id)),
     );
   }
 

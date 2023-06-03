@@ -130,7 +130,7 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
       bool isValid =
           isValidStartToken(scanData.code) && verifySignature(scanData.code);
 
-      controller!.pauseCamera();
+      controller.pauseCamera();
       if (!isValid) {
         _showInvalidQRCodePopup(controller);
       } else {
@@ -167,15 +167,15 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Error'),
-          content: Text('$message'),
+          title: const Text('Error'),
+          content: Text(message),
           actions: [
             TextButton(
               onPressed: () {
-                controller!.resumeCamera();
+                controller.resumeCamera();
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -188,15 +188,15 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Invalid QR Code'),
-          content: Text('Please scan a valid QR Code'),
+          title: const Text('Invalid QR Code'),
+          content: const Text('Please scan a valid QR Code'),
           actions: [
             TextButton(
               onPressed: () {
-                controller!.resumeCamera();
+                controller.resumeCamera();
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -207,7 +207,11 @@ class _QRCodeScannerState extends State<QrCodeScanner> {
   void _navigateToSuccessPage(item) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SuccessPage(item: item)),
+      MaterialPageRoute(
+          builder: (context) => SuccessPage(
+                item: item,
+                isOwner: false,
+              )),
     );
   }
 

@@ -6,7 +6,9 @@ import '../Services/ItemService.dart';
 
 class SuccessPage extends StatelessWidget {
   final Item item;
-  const SuccessPage({Key? key, required this.item}) : super(key: key);
+  final bool isOwner;
+  const SuccessPage({Key? key, required this.item, required this.isOwner})
+      : super(key: key);
 
   // Based on the estimation that one kg of cotton takes around 20,000 litres.
   // Weight from https://shippingstorm.com/en/list-of-weight/
@@ -34,6 +36,9 @@ class SuccessPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final startingText = isOwner
+        ? "You have successfully given away"
+        : "You are now the proud owner of";
     return Scaffold(
       backgroundColor: Colors.green,
       body: Center(
@@ -42,34 +47,34 @@ class SuccessPage extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
           ),
-          padding: EdgeInsets.all(20),
-          margin: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              const Text(
                 'Congratulations!',
                 style: TextStyle(fontSize: 24),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
-                'You are now the proud owner of \n "${item.name}"\n\nThis helped to save approximately ${NumberFormat('#,##,000').format(getAvgWater(item.category))} litres of water.\n\nThank you for doing your part to help the environment by reusing instead of buying new clothes.',
+                '$startingText\n "${item.name}"\n\nThis helped to save approximately ${NumberFormat('#,##,000').format(getAvgWater(item.category))} litres of water.\n\nThank you for doing your part to help the environment by reusing instead of buying new clothes.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MyHomePage(
-                    ),
+                    builder: (context) => MyHomePage(),
                   ));
                 },
-                child: Text('Back to home'),
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.green,
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                  backgroundColor: Colors.green,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                 ),
+                child: const Text('Back to home'),
               ),
             ],
           ),

@@ -9,7 +9,6 @@ import 'package:recloset/Components/ChooseCondition.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:recloset/Services/LocationService.dart';
 
-import '../Components/AddPhoto.dart';
 import '../Data/ListingProvider.dart';
 
 class AddItem extends StatefulWidget {

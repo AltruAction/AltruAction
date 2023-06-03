@@ -5,12 +5,14 @@ class ItemCard extends StatefulWidget {
   final String imagePath;
   final String name;
   final int credits;
+  final bool isImageHidden;
 
   const ItemCard({
     Key? key,
     required this.imagePath,
     required this.name,
     required this.credits,
+    this.isImageHidden = false,
   }) : super(key: key);
 
   @override
@@ -21,7 +23,7 @@ class _ItemCardState extends State<ItemCard> {
   Image _getImage(String imagePath) {
     Image defaultImage = Image.asset("assets/placeholder.png");
     Image image = defaultImage;
-    if (imagePath != "") {
+    if (!widget.isImageHidden && imagePath != "") {
       try {
         image = Image(image: NetworkImage(imagePath));
         return image;

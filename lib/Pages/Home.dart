@@ -3,7 +3,6 @@ import 'package:recloset/Components/Categories.dart';
 import 'package:recloset/Components/Collection.dart';
 import 'package:recloset/Components/FilterModal.dart';
 import 'package:recloset/Components/SearchBar.dart';
-import 'package:recloset/Data/Data.dart';
 import 'package:recloset/Services/ItemService.dart';
 import 'package:recloset/Types/CommonTypes.dart';
 import "CollectionPage.dart";

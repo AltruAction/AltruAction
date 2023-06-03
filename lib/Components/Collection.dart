@@ -25,11 +25,13 @@ class Collection extends StatefulWidget {
   final String title;
   final List<ItemCardData> items;
   final bool showTitle;
+  final bool isFlaggedCollection;
   const Collection({
     Key? key,
     required this.title,
     required this.items,
     this.showTitle = true,
+    this.isFlaggedCollection = false,
   }) : super(key: key);
 
   @override
@@ -79,14 +81,18 @@ class _CollectionState extends State<Collection> {
                 children: widget.items
                     .map((item) => InkWell(
                         child: ItemCard(
+                          isImageHidden: widget.isFlaggedCollection,
                           imagePath: item.imagePath,
                           name: item.name,
                           credits: item.credits,
                         ),
-                        onTap: () =>
+                        onTap: () => {
+                          if (!widget.isFlaggedCollection) {
                             Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => ViewItem(id: item.id),
-                            ))))
+                          ))
+                          }
+                        }))
                     .toList(),
               ))
         ]));

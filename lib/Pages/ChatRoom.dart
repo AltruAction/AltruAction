@@ -4,6 +4,10 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:uuid/uuid.dart';
 
+import '../Services/ItemService.dart';
+import '../Services/TransactionService.dart';
+import 'SuccessPage.dart';
+
 class ChatRoom extends StatefulWidget {
   final String chat_id;
   final String item_id;
@@ -160,6 +164,34 @@ class _ChatRoomState extends State<ChatRoom> {
     super.initState();
   }
 
+  void _showErrorPopup(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _navigateToSuccessPage() async {
+    Item item = await ItemService().getItemById(widget.item_id);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SuccessPage(item: item)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -213,8 +245,20 @@ class _ChatRoomState extends State<ChatRoom> {
                     ),
                   if (widget.current_id == owner && isOfferIntiated)
                     InkWell(
-                      onTap: () {
-                        // Handle button press
+                      onTap: () async {
+                        // Send transaction to accept
+                        try {
+                          await TransactionService().createTransaction(owner,
+                              widget.chat_id.split('_')[1], widget.item_id);
+                          _handleSystemMessage(
+                              'Congratulations! The offer Initiated for $itemName, has been accepted and the credits have been transferred.');
+                        } catch (e) {
+                          // Handle the error
+                          print('Transaction failed: $e');
+                          _showErrorPopup(e.toString());
+                          return;
+                        }
+                        _navigateToSuccessPage();
                       },
                       child: const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 15.0),

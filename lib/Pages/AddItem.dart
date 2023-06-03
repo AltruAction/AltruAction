@@ -7,7 +7,6 @@ import 'package:recloset/Components/AddPhotoCollection.dart';
 import 'package:recloset/Components/ChooseCategory.dart';
 import 'package:recloset/Components/ChooseCondition.dart';
 
-import '../Components/AddPhoto.dart';
 import '../Data/ListingProvider.dart';
 
 class AddItem extends StatefulWidget {

@@ -25,7 +25,7 @@ exports.createTransaction = functions.region('asia-southeast1').https.onCall(asy
   const receiverId = req.receiverId;
   const itemId = req.itemId;
 
-  if (receiverId != context.auth?.uid) {
+  if (receiverId != context.auth?.uid && giverId != context.auth?.uid) {
     throw new HttpsError('unauthenticated', "Unauthorised");
   }
 

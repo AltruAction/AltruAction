@@ -14,3 +14,6 @@ flutter run
 
 ### Technologies Used
 ![image](https://github.com/reCloset/reCloset/assets/50147457/062d0ef3-e933-4e9d-bb5a-a063809b010d)
+
+## Content Management System
+For our content management system, we are using a Firebase function to handle the filtering of items with explicit images. Refer to this [link](https://github.com/reCloset/recloset-functions) for the function definition.

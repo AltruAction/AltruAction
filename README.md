@@ -10,4 +10,6 @@ flutter run
 
 ## View our demo here
 
-[![image](https://user-images.githubusercontent.com/50147457/228761844-dc08b0ae-1781-475a-a833-cf4b67b5b5c5.png)](https://www.youtube.com/watch?v=9i6S-25-Ldk)
+
+
+[![image](https://github.com/reCloset/reCloset/assets/50147457/44cd0c60-084a-46a4-9a76-6d3aae5de2aa)](https://youtu.be/X6tU68o3URM)
